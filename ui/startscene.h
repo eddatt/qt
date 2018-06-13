@@ -2,8 +2,10 @@
 
 #include <QGraphicsScene>
 #include <QGraphicsObject>
+#include <QGraphicsTextItem>
 
 class Button;
+class AvatarButton;
 
 class Logo : public QGraphicsObject {
      Q_OBJECT
@@ -30,6 +32,7 @@ protected:
     void createMenu();
 private:
     Logo * logo;
-
     QList<Button *> buttons;
+
+    QGraphicsItemGroup *choose_general;
 };

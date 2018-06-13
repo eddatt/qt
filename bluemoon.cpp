@@ -14,6 +14,14 @@ BlueMoon::BlueMoon(QWidget *parent)
     loadScene(start);
 }
 
+BlueMoon * BlueMoon::getInstance()
+{
+    static BlueMoon blue(nullptr);
+
+    return &blue;
+
+}
+
 BlueMoon::~BlueMoon()
 {
     if (view) {

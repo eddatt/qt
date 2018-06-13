@@ -14,7 +14,7 @@ class BlueMoon : public QMainWindow
 {
     Q_OBJECT
 public:
-    BlueMoon(QWidget *parent = nullptr);
+    static BlueMoon *getInstance();
     ~BlueMoon();
     
     void loadScene(QGraphicsScene *scene);
@@ -22,4 +22,6 @@ public slots:
     void fitBackgroundBrush();
 private:
     CoreGraphicsView * view;
+
+    BlueMoon(QWidget *parent = nullptr);
 };

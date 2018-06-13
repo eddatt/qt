@@ -4,9 +4,11 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QtDebug>
+#include <QMessageBox>
+#include <QGraphicsItemGroup>
 
 StartScene::StartScene(QObject *parent)
-    :QGraphicsScene(parent)
+    :QGraphicsScene(parent),choose_general(nullptr)
 {
     logo = new Logo("res/logo.png");
     setSceneRect(QRectF(0, 0, 1280, 700));
@@ -16,8 +18,6 @@ StartScene::StartScene(QObject *parent)
     logo->setToolTip("Greed Play Blue Moon!");
     logo->setVisible(true);
     this->setBackgroundBrush(QPixmap("res/bg.jpg"));
-
-
     createMenu();
 }
 
@@ -48,6 +48,10 @@ void StartScene::createMenu()
     about->setPos(x, y);
     buttons << about;
 
+    QObject::connect(about, &Button::click, [this] {
+        QMessageBox::about(nullptr, "About", "GouliGuoJiaShengSiYi");
+    });
+
     y += 40 + h;
 
     Button *exit_b = new Button("Exit", w, h);
@@ -64,7 +68,8 @@ void StartScene::createMenu()
 Logo::Logo(const QString &filename)
 {
     if (!QFile::exists(filename)) {
-
+        QMessageBox::warning(nullptr, "Image No Found", QString("Cannot found the image %1 !").arg(filename));
+        return;
     }
     pixmap = QPixmap(filename);
 }
@@ -78,5 +83,4 @@ void Logo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 {
     painter->drawPixmap(0, 0, pixmap);
 }
-
 
