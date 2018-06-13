@@ -3,6 +3,10 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QFont>
+#include <QFile>
+#include <QMessageBox>
+#include <QPainter>
+#include <QPropertyAnimation>
 
 
 
@@ -45,7 +49,6 @@ Button::Button(const QString &display_value, double w, double h)
     background_rect->setVisible(true);
 
     setAcceptHoverEvents(true);
-    setAcceptHoverEvents(true);
     setAcceptedMouseButtons(Qt::LeftButton);
 }
 
@@ -60,6 +63,8 @@ void Button::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
+    text_item->setDefaultTextColor("white");
+    background_rect->setBrush(QColor("black"));
     emit this->click();
 }
 
@@ -93,7 +98,15 @@ void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 
 AvatarButton::AvatarButton(const QString &general, const QString &icon)
 {
-
+    setToolTip(general);
+    if (!QFile::exists(QString("res/%1.png").arg(icon))) {
+        QMessageBox::warning(nullptr, "Image No Found", QString("Cannot found the image %1 !").arg(QString("res/%1.png").arg(icon)));
+    }
+    this->icon = QPixmap(QString("res/%1.png").arg(icon));
+    this->icon = this->icon.scaled(QSize(150, 150));
+    setOpacity(0.5);
+    setAcceptedMouseButtons(Qt::LeftButton);
+    setAcceptHoverEvents(true);
 }
 
 AvatarButton::~AvatarButton()
@@ -103,30 +116,36 @@ AvatarButton::~AvatarButton()
 
 QRectF AvatarButton::boundingRect() const
 {
-    return QRectF();
+    return QRectF(0,0,150,150);
 }
 
 void AvatarButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)
 {
-
+    painter->drawPixmap(0,0,this->icon);
 }
 
 void AvatarButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-
+    event->accept();
 }
 
 void AvatarButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-
+    emit this->click(this->toolTip());
 }
 
 void AvatarButton::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-
+    QPropertyAnimation *anima = new QPropertyAnimation(this, "opacity");
+    anima->setEndValue(1);
+    anima->setDuration(100);
+    anima->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 void AvatarButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-
+    QPropertyAnimation *anima = new QPropertyAnimation(this, "opacity");
+    anima->setEndValue(0.5);
+    anima->setDuration(100);
+    anima->start(QAbstractAnimation::DeleteWhenStopped);
 }

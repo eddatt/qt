@@ -19,6 +19,8 @@ public:
     static GameLogic *getInstance();
     ~GameLogic();
 
+    QStringList getAllGenerals() const;
+
 private:
     GameLogic(QObject *parent);
     QHash<QString, General*> generals;

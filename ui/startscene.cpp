@@ -1,11 +1,14 @@
 #include "startscene.h"
 #include "ui/button.h"
+#include "logic/gamelogic.h"
+
 #include <QFile>
 #include <QPainter>
 #include <QPixmap>
 #include <QtDebug>
 #include <QMessageBox>
 #include <QGraphicsItemGroup>
+
 
 StartScene::StartScene(QObject *parent)
     :QGraphicsScene(parent),choose_general(nullptr)
@@ -30,6 +33,13 @@ StartScene::~StartScene()
 
 void StartScene::createMenu()
 {
+    if (buttons.size() == 3) {
+        if (choose_general && choose_general->isVisible())
+            choose_general->hide();
+        for (auto &p : buttons)
+            p->show();
+        return;
+    }
     Button *start = new Button("Start Game");
     addItem(start);
     start->setPos((this->sceneRect().width() - start->boundingRect().width()) / 2, logo->y() + logo->boundingRect().height() + 80);
@@ -40,6 +50,9 @@ void StartScene::createMenu()
     auto h = start->boundingRect().height();
     auto x = start->x();
     auto y = start->y();
+    QObject::connect(start, &Button::click, [this] {
+        this->createCooseGeneralPannel();
+    });
 
     y += 40 + h;
 
@@ -67,11 +80,24 @@ void StartScene::createMenu()
 
 void StartScene::createCooseGeneralPannel()
 {
-    if (choose_general != nullptr)
+    for (auto &p : buttons) {
+        if(p->isVisible())
+            p->hide();
+    }
+    if (choose_general != nullptr) {
+        choose_general->show();
         return;
+    }
+        
     
-    // title!
-
+    choose_general = new ChooseGeneralPanel;
+    
+    this->addItem(choose_general);
+    choose_general->setPos((this->sceneRect().width() - choose_general->boundingRect().width()) / 2, logo->y() + logo->boundingRect().height() + 80);
+    choose_general->show();
+    QObject::connect(choose_general, &ChooseGeneralPanel::onBackClicked, [this]() {
+        this->createMenu();
+    });
 }
 
 Logo::Logo(const QString &filename)
@@ -95,8 +121,9 @@ void Logo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
 QRectF ChooseGeneralPanel::boundingRect() const
 {
-    return QRectF(0,0,0,0);
-
+    double width = qMax<double>(buttons.size() * 150 + qMax<int>(buttons.size()-1,0)*40,title->boundingRect().width());
+    double height = 190 + title->boundingRect().height() + (back != nullptr ? back->boundingRect().height() : 0) + 40;
+    return QRectF(0, 0, width, height);
 }
 
 void ChooseGeneralPanel::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)
@@ -109,6 +136,35 @@ void ChooseGeneralPanel::parse(const QStringList &generals)
     for (auto &s : generals) {
         this->buttons[s] = new AvatarButton(s, s);
     }
+}
 
+ChooseGeneralPanel::ChooseGeneralPanel(QGraphicsItem *parent /*= nullptr*/)
+    :QGraphicsObject(parent), title(nullptr), back(nullptr)
+{
+    title = new QGraphicsTextItem("Please Choose A General To Go:");
+    title->setFont(Button::getButtonFont());
+    title->setDefaultTextColor("white");
+    back = new Button("Back");
+    parse(GameLogic::getInstance()->getAllGenerals());
+    back->setParentItem(this);
+    double mx = this->boundingRect().width() / 2;
+    back->setPos(mx - back->boundingRect().width() / 2, 230 + title->boundingRect().height());
+    back->show();
+    QObject::connect(back, &Button::click, this, &ChooseGeneralPanel::onBackClicked);
+    title->setParentItem(this);
+    title->setPos(mx - title->boundingRect().width() / 2, 0);
+    title->show();
+    int i = 0;
+    for (auto &b : buttons.values()) {
+        b->setParentItem(this);
+        b->setPos(i * 190, title->boundingRect().height() + 40);
+        b->show();
+        QObject::connect(b, &AvatarButton::click, this, &ChooseGeneralPanel::onGeneralChosen);
+        ++i;
+    }
+}
+
+ChooseGeneralPanel::~ChooseGeneralPanel()
+{
 
 }

@@ -33,6 +33,9 @@ public:
 
     virtual QRectF boundingRect()const override;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */) override;
+signals:
+    void onBackClicked();
+    void onGeneralChosen(QString);
 private:
     QHash<QString, AvatarButton *> buttons;
     QGraphicsTextItem *title;
@@ -53,5 +56,5 @@ private:
     Logo * logo;
     QList<Button *> buttons;
 
-    QGraphicsItemGroup *choose_general;
+    ChooseGeneralPanel *choose_general;
 };

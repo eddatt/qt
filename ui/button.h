@@ -56,5 +56,4 @@ signals:
 private:
     QPixmap icon;
     QString value;
-    QGraphicsTextItem *text_item;
 };
