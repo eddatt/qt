@@ -8,7 +8,7 @@ BlueMoon::BlueMoon(QWidget *parent)
 {
     view = new CoreGraphicsView(this);
     setCentralWidget(view);
-    resize(QSize(1366, 768));
+    resize(QSize(1280, 768));
     setWindowTitle("Qt Blue Moon");
     StartScene *start = new StartScene(this);
     loadScene(start);

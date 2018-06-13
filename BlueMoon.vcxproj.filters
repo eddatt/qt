@@ -42,6 +42,9 @@
     <ClCompile Include="logic\gamelogic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ui\button.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="BlueMoon.qrc">
@@ -59,6 +62,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="logic\gamelogic.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ui\button.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

@@ -3,27 +3,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsObject>
 
-
-class AvatarButton : public QGraphicsObject {
-    Q_OBJECT
-public:
-    AvatarButton(const QString &general, const QString &icon);
-
-    virtual QRectF boundingRect() const override;
-
-    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */) override;
-
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-
-    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
-    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
-signals:
-    void click();
-private:
-    QString general;
-    QPixmap icon;
-};
+class Button;
 
 class Logo : public QGraphicsObject {
      Q_OBJECT
@@ -46,6 +26,10 @@ class StartScene : public QGraphicsScene
 public:
     StartScene(QObject *parent);
     ~StartScene();
+protected:
+    void createMenu();
 private:
     Logo * logo;
+
+    QList<Button *> buttons;
 };
