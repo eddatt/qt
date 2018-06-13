@@ -9,10 +9,9 @@
 Button::Button(const QString &display_value, double w, double h)
     :value(display_value), text_item(nullptr), wx(w), hx(h)
 {
-    static QFont f = QFont("Microsoft YaHei", 20);
     text_item = new QGraphicsTextItem(display_value,this);  // freed when parent is freed.
     text_item->setDefaultTextColor(QColor("white"));
-    text_item->setFont(f);
+    text_item->setFont(getButtonFont());
     text_item->setParentItem(this);
     double tx = 40, ty = 20;
     if (wx > 0) {
@@ -74,6 +73,12 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 
 }
 
+const QFont & Button::getButtonFont()
+{
+    static QFont f = QFont("Microsoft YaHei", 20);
+    return f;
+}
+
 void Button::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     text_item->setDefaultTextColor("white");
@@ -84,4 +89,44 @@ void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     text_item->setDefaultTextColor("black");
     background_rect->setBrush(QColor("white"));
+}
+
+AvatarButton::AvatarButton(const QString &general, const QString &icon)
+{
+
+}
+
+AvatarButton::~AvatarButton()
+{
+
+}
+
+QRectF AvatarButton::boundingRect() const
+{
+    return QRectF();
+}
+
+void AvatarButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)
+{
+
+}
+
+void AvatarButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+
+}
+
+void AvatarButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+
+}
+
+void AvatarButton::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+
+}
+
+void AvatarButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+
 }

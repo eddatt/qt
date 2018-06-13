@@ -4,6 +4,8 @@
 #include <QGraphicsTextItem>
 #include <QGraphicsRectItem>
 
+class QFont;
+
 class Button : public QGraphicsObject
 {
     Q_OBJECT
@@ -21,6 +23,8 @@ public:
     virtual QRectF boundingRect() const override;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */) override;
 
+    static const QFont &getButtonFont();
+
 signals:
     void click();
 private:
@@ -35,6 +39,7 @@ class AvatarButton : public QGraphicsObject {
     Q_OBJECT
 public:
     AvatarButton(const QString &general, const QString &icon);
+    ~AvatarButton();
 
     virtual QRectF boundingRect() const override;
 
@@ -47,7 +52,7 @@ public:
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
 signals:
-    void click();
+    void click(QString general);
 private:
     QPixmap icon;
     QString value;

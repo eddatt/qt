@@ -65,6 +65,15 @@ void StartScene::createMenu()
 
 }
 
+void StartScene::createCooseGeneralPannel()
+{
+    if (choose_general != nullptr)
+        return;
+    
+    // title!
+
+}
+
 Logo::Logo(const QString &filename)
 {
     if (!QFile::exists(filename)) {
@@ -84,3 +93,22 @@ void Logo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->drawPixmap(0, 0, pixmap);
 }
 
+QRectF ChooseGeneralPanel::boundingRect() const
+{
+    return QRectF(0,0,0,0);
+
+}
+
+void ChooseGeneralPanel::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)
+{
+
+}
+
+void ChooseGeneralPanel::parse(const QStringList &generals)
+{
+    for (auto &s : generals) {
+        this->buttons[s] = new AvatarButton(s, s);
+    }
+
+
+}
