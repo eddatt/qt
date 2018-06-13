@@ -45,16 +45,16 @@
     <ClCompile Include="ui\button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="player.cpp">
+    <ClCompile Include="logic\card.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="skill.cpp">
+    <ClCompile Include="logic\item.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="item.cpp">
+    <ClCompile Include="logic\player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="card.cpp">
+    <ClCompile Include="logic\skill.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -79,18 +79,18 @@
     <QtMoc Include="ui\button.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="player.h">
+    <QtMoc Include="logic\player.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="skill.h">
+    <ClInclude Include="logic\item.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="item.h">
+    <ClInclude Include="logic\skill.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="card.h">
+    <ClInclude Include="logic\card.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
