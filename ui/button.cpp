@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QPropertyAnimation>
+#include <QGraphicsDropShadowEffect>
 
 
 
@@ -54,6 +55,10 @@ Button::Button(const QString &display_value, double w, double h)
 
 Button::~Button()
 {
+    if (text_item)
+        text_item->deleteLater();
+    if (background_rect)
+        delete background_rect;
 }
 
 void Button::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -97,26 +102,59 @@ void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 }
 
 AvatarButton::AvatarButton(const QString &general, const QString &icon)
+    :QGraphicsObject(nullptr),value(general), boundary(nullptr)
 {
     setToolTip(general);
     if (!QFile::exists(QString("res/%1.png").arg(icon))) {
         QMessageBox::warning(nullptr, "Image No Found", QString("Cannot found the image %1 !").arg(QString("res/%1.png").arg(icon)));
     }
     this->icon = QPixmap(QString("res/%1.png").arg(icon));
-    this->icon = this->icon.scaled(QSize(150, 150));
+    this->icon = this->icon.scaled(QSize(150, 150),Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
     setOpacity(0.5);
     setAcceptedMouseButtons(Qt::LeftButton);
     setAcceptHoverEvents(true);
+    this->selected = false;
+    this->boundary = new QGraphicsRectItem(this->boundingRect(),this);
+    boundary->setParentItem(this);
+    static QPen tmp;
+    tmp.setWidth(5);
+    tmp.setBrush(QColor("white"));
+    tmp.setJoinStyle(Qt::RoundJoin);
+
+    boundary->setPen(tmp);
+    boundary->setBrush(Qt::NoBrush);
+
+    boundary->show();
 }
 
 AvatarButton::~AvatarButton()
 {
+    if (boundary)
+        delete boundary;
 
 }
 
 QRectF AvatarButton::boundingRect() const
 {
     return QRectF(0,0,150,150);
+}
+
+void AvatarButton::setSelected(bool is_selected)
+{
+    this->selected = is_selected;
+    setAcceptHoverEvents(!is_selected);
+    static QPen tmp;
+    tmp.setWidth(5);
+    tmp.setJoinStyle(Qt::RoundJoin);
+    if (selected) {
+        tmp.setBrush(QColor("gold"));
+        setOpacity(1);
+    } else {
+       setOpacity(0.5);
+       tmp.setBrush(QColor("white"));
+    }
+    boundary->setPen(tmp);
+        
 }
 
 void AvatarButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)
@@ -131,7 +169,7 @@ void AvatarButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void AvatarButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    emit this->click(this->toolTip());
+    emit this->click(value);
 }
 
 void AvatarButton::hoverEnterEvent(QGraphicsSceneHoverEvent *event)

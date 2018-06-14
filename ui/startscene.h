@@ -34,12 +34,16 @@ public:
     virtual QRectF boundingRect()const override;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */) override;
 signals:
-    void onBackClicked();
-    void onGeneralChosen(QString);
+    void backClicked();
+    void generalChosen(QString);
+    void startClicked();
+private slots:
+    void onDealChosen(QString chosen);
 private:
     QHash<QString, AvatarButton *> buttons;
     QGraphicsTextItem *title;
-    Button *back;
+    Button *back, *start;
+    QString selected;
 };
 
 class StartScene final : public QGraphicsScene

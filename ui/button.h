@@ -43,6 +43,8 @@ public:
 
     virtual QRectF boundingRect() const override;
 
+    void setSelected(bool is_selected);
+
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */) override;
 
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -55,5 +57,7 @@ signals:
     void click(QString general);
 private:
     QPixmap icon;
+    bool selected;
     QString value;
+    QGraphicsRectItem *boundary;
 };

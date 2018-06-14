@@ -93,9 +93,9 @@ void StartScene::createCooseGeneralPannel()
     choose_general = new ChooseGeneralPanel;
     
     this->addItem(choose_general);
-    choose_general->setPos((this->sceneRect().width() - choose_general->boundingRect().width()) / 2, logo->y() + logo->boundingRect().height() + 80);
+    choose_general->setPos((this->sceneRect().width() - choose_general->boundingRect().width()) / 2, logo->y() + logo->boundingRect().height() + 50);
     choose_general->show();
-    QObject::connect(choose_general, &ChooseGeneralPanel::onBackClicked, [this]() {
+    QObject::connect(choose_general, &ChooseGeneralPanel::backClicked, [this]() {
         this->createMenu();
     });
 }
@@ -121,8 +121,9 @@ void Logo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
 QRectF ChooseGeneralPanel::boundingRect() const
 {
-    double width = qMax<double>(buttons.size() * 150 + qMax<int>(buttons.size()-1,0)*40,title->boundingRect().width());
-    double height = 190 + title->boundingRect().height() + (back != nullptr ? back->boundingRect().height() : 0) + 40;
+    double width = qMax<double>(buttons.size() * 160 + qMax<int>(buttons.size()-1,0)*40,title->boundingRect().width());
+    width = qMax<double>(width, start != nullptr ? 2 * start->boundingRect().width()+ 70 : 0);
+    double height = 190 + title->boundingRect().height() + (back != nullptr ? back->boundingRect().height() : 0) + 70;
     return QRectF(0, 0, width, height);
 }
 
@@ -139,18 +140,26 @@ void ChooseGeneralPanel::parse(const QStringList &generals)
 }
 
 ChooseGeneralPanel::ChooseGeneralPanel(QGraphicsItem *parent /*= nullptr*/)
-    :QGraphicsObject(parent), title(nullptr), back(nullptr)
+    :QGraphicsObject(parent), title(nullptr), back(nullptr), start(nullptr), selected("")
 {
     title = new QGraphicsTextItem("Please Choose A General To Go:");
     title->setFont(Button::getButtonFont());
     title->setDefaultTextColor("white");
-    back = new Button("Back");
+
     parse(GameLogic::getInstance()->getAllGenerals());
-    back->setParentItem(this);
     double mx = this->boundingRect().width() / 2;
-    back->setPos(mx - back->boundingRect().width() / 2, 230 + title->boundingRect().height());
+
+    start = new Button("Start");
+    start->setParentItem(this);
+    start->setPos(mx + 35, 260 + title->boundingRect().height());
+    start->show();
+
+    back = new Button("Back", start->boundingRect().width(),start->boundingRect().height());
+    back->setParentItem(this);
+    back->setPos(mx - start->boundingRect().width() - 35, 260 + title->boundingRect().height());
     back->show();
-    QObject::connect(back, &Button::click, this, &ChooseGeneralPanel::onBackClicked);
+    
+    QObject::connect(back, &Button::click, this, &ChooseGeneralPanel::backClicked);
     title->setParentItem(this);
     title->setPos(mx - title->boundingRect().width() / 2, 0);
     title->show();
@@ -159,12 +168,31 @@ ChooseGeneralPanel::ChooseGeneralPanel(QGraphicsItem *parent /*= nullptr*/)
         b->setParentItem(this);
         b->setPos(i * 190, title->boundingRect().height() + 40);
         b->show();
-        QObject::connect(b, &AvatarButton::click, this, &ChooseGeneralPanel::onGeneralChosen);
+        QObject::connect(b, &AvatarButton::click, this, &ChooseGeneralPanel::generalChosen);
         ++i;
     }
+
+    QObject::connect(this, &ChooseGeneralPanel::generalChosen, this, &ChooseGeneralPanel::onDealChosen);
 }
 
 ChooseGeneralPanel::~ChooseGeneralPanel()
 {
 
+}
+
+void ChooseGeneralPanel::onDealChosen(QString chosen)
+{
+    if (chosen != this->selected) {
+        if(!this->selected.isEmpty())
+            buttons[this->selected]->setSelected(false);
+        this->buttons[chosen]->setSelected(true);
+        this->selected = chosen;
+    }
+    else {
+        if (!this->selected.isEmpty())
+            buttons[this->selected]->setSelected(false);
+        this->selected = "";
+
+    }
+    
 }
