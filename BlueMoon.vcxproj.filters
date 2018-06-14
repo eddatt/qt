@@ -57,6 +57,15 @@
     <ClCompile Include="logic\skill.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ui\gamescene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\uiutility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\infobarner.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="BlueMoon.qrc">
@@ -82,6 +91,12 @@
     <QtMoc Include="logic\player.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="ui\gamescene.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ui\infobarner.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="logic\item.h">
@@ -91,6 +106,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="logic\card.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\uiutility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

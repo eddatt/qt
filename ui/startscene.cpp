@@ -1,6 +1,9 @@
 #include "startscene.h"
 #include "ui/button.h"
 #include "logic/gamelogic.h"
+#include "ui/uiutility.h"
+
+#include "infobarner.h"
 
 #include <QFile>
 #include <QPainter>
@@ -9,19 +12,21 @@
 #include <QMessageBox>
 #include <QGraphicsItemGroup>
 
-
 StartScene::StartScene(QObject *parent)
-    :QGraphicsScene(parent),choose_general(nullptr)
+    :QGraphicsScene(parent),choose_general(nullptr), logo(nullptr)
 {
-    logo = new Logo("res/logo.png");
+    logo = new Logo;
     setSceneRect(QRectF(0, 0, 1280, 700));
     addItem(logo);
     qDebug() << QString("%1,%2").arg(this->sceneRect().width()).arg(this->sceneRect().height());
     logo->setPos((this->sceneRect().width() - logo->boundingRect().width()) / 2, (this->sceneRect().height() - 3.2 * logo->boundingRect().height()) / 2);
     logo->setToolTip("Greed Play Blue Moon!");
     logo->setVisible(true);
-    this->setBackgroundBrush(QPixmap("res/bg.jpg"));
+    this->setBackgroundBrush(QPixmap(UIUtility::getBackgroundPath("start")));
     createMenu();
+
+    //addItem(InfoBanner::getInstance());
+    //InfoBanner::getInstance()->show();
 }
 
 StartScene::~StartScene()
@@ -100,13 +105,9 @@ void StartScene::createCooseGeneralPannel()
     });
 }
 
-Logo::Logo(const QString &filename)
+Logo::Logo()
 {
-    if (!QFile::exists(filename)) {
-        QMessageBox::warning(nullptr, "Image No Found", QString("Cannot found the image %1 !").arg(filename));
-        return;
-    }
-    pixmap = QPixmap(filename);
+    pixmap = QPixmap(UIUtility::getPixmap("system","logo"));
 }
 
 QRectF Logo::boundingRect() const
@@ -143,7 +144,7 @@ ChooseGeneralPanel::ChooseGeneralPanel(QGraphicsItem *parent /*= nullptr*/)
     :QGraphicsObject(parent), title(nullptr), back(nullptr), start(nullptr), selected("")
 {
     title = new QGraphicsTextItem("Please Choose A General To Go:");
-    title->setFont(Button::getButtonFont());
+    title->setFont(UIUtility::getDefaultFont());
     title->setDefaultTextColor("white");
 
     parse(GameLogic::getInstance()->getAllGenerals());
@@ -160,7 +161,14 @@ ChooseGeneralPanel::ChooseGeneralPanel(QGraphicsItem *parent /*= nullptr*/)
     back->show();
     
     QObject::connect(back, &Button::click, this, &ChooseGeneralPanel::backClicked);
+    QObject::connect(back, &Button::click, [this]() {
+        for (auto &p : buttons.values())
+            p->setSelected(false);
+        this->selected = "";
+    });
     title->setParentItem(this);
+    qDebug() << title->parentItem();
+    qDebug() << title->parent();
     title->setPos(mx - title->boundingRect().width() / 2, 0);
     title->show();
     int i = 0;
@@ -177,6 +185,10 @@ ChooseGeneralPanel::ChooseGeneralPanel(QGraphicsItem *parent /*= nullptr*/)
 
 ChooseGeneralPanel::~ChooseGeneralPanel()
 {
+    title->deleteLater();
+    start->deleteLater();
+    for (auto &b : buttons.values())
+        b->deleteLater();
 
 }
 

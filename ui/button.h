@@ -23,8 +23,6 @@ public:
     virtual QRectF boundingRect() const override;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */) override;
 
-    static const QFont &getButtonFont();
-
 signals:
     void click();
 private:

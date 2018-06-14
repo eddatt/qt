@@ -2,7 +2,7 @@
 #include "bluemoon.h"
 
 GameLogic::GameLogic(QObject *parent)
-    : QObject(parent)
+    : QObject(parent), is_run(false)
 {
 }
 

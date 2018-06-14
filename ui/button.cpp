@@ -1,5 +1,5 @@
 #include "button.h"
-
+#include "ui/uiutility.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QFont>
@@ -11,12 +11,13 @@
 
 
 
+
 Button::Button(const QString &display_value, double w, double h)
     :value(display_value), text_item(nullptr), wx(w), hx(h)
 {
     text_item = new QGraphicsTextItem(display_value,this);  // freed when parent is freed.
     text_item->setDefaultTextColor(QColor("white"));
-    text_item->setFont(getButtonFont());
+    text_item->setFont(UIUtility::getDefaultFont());
     text_item->setParentItem(this);
     double tx = 40, ty = 20;
     if (wx > 0) {
@@ -83,11 +84,6 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 
 }
 
-const QFont & Button::getButtonFont()
-{
-    static QFont f = QFont("Microsoft YaHei", 20);
-    return f;
-}
 
 void Button::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
@@ -105,11 +101,7 @@ AvatarButton::AvatarButton(const QString &general, const QString &icon)
     :QGraphicsObject(nullptr),value(general), boundary(nullptr)
 {
     setToolTip(general);
-    if (!QFile::exists(QString("res/%1.png").arg(icon))) {
-        QMessageBox::warning(nullptr, "Image No Found", QString("Cannot found the image %1 !").arg(QString("res/%1.png").arg(icon)));
-    }
-    this->icon = QPixmap(QString("res/%1.png").arg(icon));
-    this->icon = this->icon.scaled(QSize(150, 150),Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+    this->icon = UIUtility::getPixmap("general",icon,QSize(150,150));
     setOpacity(0.5);
     setAcceptedMouseButtons(Qt::LeftButton);
     setAcceptHoverEvents(true);

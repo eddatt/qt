@@ -11,7 +11,7 @@ class Logo final : public QGraphicsObject
 {
      Q_OBJECT
 public:
-    Logo(const QString &filename);
+    Logo();
 
     virtual QRectF boundingRect() const override;
 

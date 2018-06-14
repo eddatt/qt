@@ -2,10 +2,11 @@
 
 
 
-Item::Item()
+Item::Item(const QString &name)
+    : m_name(name)
 {
-}
 
+}
 
 Item::~Item()
 {
