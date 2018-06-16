@@ -54,7 +54,7 @@ public:
 signals:
     void click(QString general);
 private:
-    QPixmap icon;
+    QString m_icon;
     bool selected;
     QString value;
     QGraphicsRectItem *boundary;

@@ -9,6 +9,7 @@ BlueMoon::BlueMoon(QWidget *parent)
     view = new CoreGraphicsView(this);
     setCentralWidget(view);
     resize(QSize(1280, 768));
+    setWindowFlags(windowFlags()&~Qt::WindowMaximizeButtonHint);
     setWindowTitle("Qt Blue Moon");
     StartScene *start = new StartScene(this);
     loadScene(start);
@@ -33,7 +34,7 @@ void BlueMoon::loadScene(QGraphicsScene *scene)
 {
     auto old_scene = view->scene();
     if (old_scene) {
-        scene->deleteLater();
+        scene->destroyed();
     }
     this->view->setScene(scene);
     QResizeEvent e(QSize(view->size().width(), view->size().height()), view->size());
@@ -59,7 +60,7 @@ void BlueMoon::fitBackgroundBrush()
 CoreGraphicsView::CoreGraphicsView(QWidget *parent)
     :QGraphicsView(parent)
 {
-    setRenderHints(QPainter::TextAntialiasing | QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    setRenderHints(QPainter::TextAntialiasing | QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
     setSceneRect(QRectF(0, 0, 1280, 720));
 }
 

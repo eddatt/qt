@@ -2,6 +2,7 @@
 #include "logic/player.h"
 #include "uiutility.h"
 #include "infobarner.h"
+#include "dash_board.h"
 
 #include <QPixmap>
 #include <QPainter>
@@ -9,17 +10,21 @@
 GameScene::GameScene(QObject *parent)
     :QGraphicsScene(parent)
 {
-    this->setBackgroundBrush(QPixmap("res/bg.jpg"));
-    setSceneRect(QRectF(0, 0, 1280, 700));
-    dash_board = DashBoard::getInstance();
-    barner = InfoBanner::getInstance();
+    setSceneRect(UIUtility::getGraphicsSceneRect());
+    dash_board = new DashBoard;
+    dash_board->setParent(this);
+    this->addItem(dash_board);
+    dash_board->setPos(0, UIUtility::getGraphicsSceneRect().height() - dash_board->boundingRect().height());
+    dash_board->show();
+
+    barner = new InfoBanner;
+    barner->setParent(this);
+    this->addItem(barner);
+    barner->setPos(0, 0);
+    barner->show();
+    this->setBackgroundBrush(QPixmap(UIUtility::getBackgroundPath("on_game")));
 }
 
-GameScene *GameScene::getInstance()
-{
-    static GameScene scene(nullptr);
-    return &scene;
-}
 
 /*
 __________________________________________________________________________
@@ -70,32 +75,3 @@ GameScene::~GameScene()
 
 }
 
-
-
-
-DashBoard * DashBoard::getInstance()
-{
-    static DashBoard dash;
-    return &dash;
-}
-
-QRectF DashBoard::boundingRect() const
-{
-    double width = GameScene::getInstance()->width();
-    return QRectF(0, 0, width, 300);
-}
-
-void DashBoard::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)
-{
-
-}
-
-DashBoard::~DashBoard()
-{
-
-}
-
-DashBoard::DashBoard()
-{
-
-}

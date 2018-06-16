@@ -98,10 +98,9 @@ void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 }
 
 AvatarButton::AvatarButton(const QString &general, const QString &icon)
-    :QGraphicsObject(nullptr),value(general), boundary(nullptr)
+    :QGraphicsObject(nullptr),value(general), boundary(nullptr), m_icon(icon)
 {
     setToolTip(general);
-    this->icon = UIUtility::getPixmap("general",icon,QSize(150,150));
     setOpacity(0.5);
     setAcceptedMouseButtons(Qt::LeftButton);
     setAcceptHoverEvents(true);
@@ -151,7 +150,7 @@ void AvatarButton::setSelected(bool is_selected)
 
 void AvatarButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)
 {
-    painter->drawPixmap(0,0,this->icon);
+    painter->drawPixmap(0,0, UIUtility::getPixmap("general", m_icon, QSize(150, 150)));
 }
 
 void AvatarButton::mousePressEvent(QGraphicsSceneMouseEvent *event)

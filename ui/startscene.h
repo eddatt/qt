@@ -18,7 +18,6 @@ public:
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */) override;
 
 private:
-    QPixmap pixmap;
 
 };
 
@@ -36,7 +35,7 @@ public:
 signals:
     void backClicked();
     void generalChosen(QString);
-    void startClicked();
+    void startClicked(QString);
 private slots:
     void onDealChosen(QString chosen);
 private:
@@ -53,6 +52,8 @@ class StartScene final : public QGraphicsScene
 public:
     StartScene(QObject *parent);
     ~StartScene();
+public slots:
+    void onGeneralConfirmed(const QString &general);
 protected:
     void createMenu();
     void createCooseGeneralPannel();

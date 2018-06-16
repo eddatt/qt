@@ -1,9 +1,12 @@
 #include "startscene.h"
 #include "ui/button.h"
 #include "logic/gamelogic.h"
+#include "logic/player.h"
 #include "ui/uiutility.h"
+#include "bluemoon.h"
 
 #include "infobarner.h"
+#include "gamescene.h"
 
 #include <QFile>
 #include <QPainter>
@@ -16,10 +19,9 @@ StartScene::StartScene(QObject *parent)
     :QGraphicsScene(parent),choose_general(nullptr), logo(nullptr)
 {
     logo = new Logo;
-    setSceneRect(QRectF(0, 0, 1280, 700));
+    setSceneRect(UIUtility::getGraphicsSceneRect());
     addItem(logo);
-    qDebug() << QString("%1,%2").arg(this->sceneRect().width()).arg(this->sceneRect().height());
-    logo->setPos((this->sceneRect().width() - logo->boundingRect().width()) / 2, (this->sceneRect().height() - 3.2 * logo->boundingRect().height()) / 2);
+    logo->setPos((this->sceneRect().width() - logo->boundingRect().width()) / 2, (this->sceneRect().height() - 3.5* logo->boundingRect().height()) / 2);
     logo->setToolTip("Greed Play Blue Moon!");
     logo->setVisible(true);
     this->setBackgroundBrush(QPixmap(UIUtility::getBackgroundPath("start")));
@@ -103,21 +105,27 @@ void StartScene::createCooseGeneralPannel()
     QObject::connect(choose_general, &ChooseGeneralPanel::backClicked, [this]() {
         this->createMenu();
     });
+    QObject::connect(choose_general, &ChooseGeneralPanel::startClicked, this, &StartScene::onGeneralConfirmed);
+}
+
+void StartScene::onGeneralConfirmed(const QString &general)
+{
+    HumanPlayer::getInstance()->setGeneral(general);
+    BlueMoon::getInstance()->loadScene(new GameScene(BlueMoon::getInstance()));   
 }
 
 Logo::Logo()
 {
-    pixmap = QPixmap(UIUtility::getPixmap("system","logo"));
 }
 
 QRectF Logo::boundingRect() const
 {
-    return pixmap.rect();
+    return UIUtility::getPixmap("system", "logo").rect();
 }
 
 void Logo::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)
 {
-    painter->drawPixmap(0, 0, pixmap);
+    painter->drawPixmap(0, 0, UIUtility::getPixmap("system", "logo"));
 }
 
 QRectF ChooseGeneralPanel::boundingRect() const
@@ -154,6 +162,11 @@ ChooseGeneralPanel::ChooseGeneralPanel(QGraphicsItem *parent /*= nullptr*/)
     start->setParentItem(this);
     start->setPos(mx + 35, 260 + title->boundingRect().height());
     start->show();
+    QObject::connect(start, &Button::click, [this]() {
+        if (!this->selected.isEmpty())
+            this->startClicked(selected);
+    });
+
 
     back = new Button("Back", start->boundingRect().width(),start->boundingRect().height());
     back->setParentItem(this);

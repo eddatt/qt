@@ -16,33 +16,31 @@ __________________________________________________________________________
 Items
 __________________________________________________________________________
 */
-InfoBanner * InfoBanner::getInstance()
-{
-    static InfoBanner barner;
-    return &barner;
-}
 
 QRectF InfoBanner::boundingRect() const
 {
-    double width = GameScene::getInstance()->width();
+    double width = UIUtility::getGraphicsSceneRect().width();
     return QRectF(0, 0, width, INFO_HEIGHT + ITEM_HEIGHT);
 }
 
 void InfoBanner::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
-    painter->setBrush(QColor("#495A80"));
+    painter->setBrush(QColor("#7B7687"));
     painter->setPen(Qt::NoPen);
     painter->drawRect(0, 0, boundingRect().width(), INFO_HEIGHT);
 }
 
 InfoBanner::~InfoBanner()
 {
-
+    delete level;
+    delete Hp;
+    delete general_name;
 }
 
 InfoBanner::InfoBanner()
     :current_level(0)
 {
+    
     initializeText();
     initializerItems();
 
@@ -50,21 +48,19 @@ InfoBanner::InfoBanner()
 
 void InfoBanner::initializeText()
 {
-    this->general_name = new QGraphicsTextItem;
-    general_name->setPlainText(HumanPlayer::getInstance()->general());
-    general_name->setDefaultTextColor("white");
+    this->general_name = new QGraphicsSimpleTextItem;
+    general_name->setText(HumanPlayer::getInstance()->general());
+    general_name->setBrush(QColor("white"));
     general_name->setFont(UIUtility::getInfoBarnerFont());
-    general_name->setParent(this);
     general_name->setParentItem(this);
     general_name->setPos(50, INFO_HEIGHT/2 - general_name->boundingRect().height() / 2);
 
     double currentX = 50 + general_name->boundingRect().width() + 50;
 
-    this->Hp = new QGraphicsTextItem;
-    Hp->setPlainText(QString("%1 / %1").arg(HumanPlayer::getInstance()->hp()).arg(HumanPlayer::getInstance()->maxHp()));
-    Hp->setDefaultTextColor("red");
+    this->Hp = new QGraphicsSimpleTextItem;
+    Hp->setText(QString("%1 / %1").arg(HumanPlayer::getInstance()->hp()).arg(HumanPlayer::getInstance()->maxHp()));
+    Hp->setBrush(QColor("red"));
     Hp->setFont(UIUtility::getInfoBarnerFont());
-    Hp->setParent(this);
     Hp->setParentItem(this);
     Hp->setPos(currentX, INFO_HEIGHT/2 - Hp->boundingRect().height() / 2);
     currentX += Hp->boundingRect().width() + 100;
@@ -80,11 +76,10 @@ void InfoBanner::initializeText()
 
     currentX += player_property->boundingRect().width() + 100;
 
-    this->level = new QGraphicsTextItem;
-    level->setPlainText(QString("Level %1").arg(current_level));
-    level->setDefaultTextColor("white");
+    this->level = new QGraphicsSimpleTextItem;
+    level->setText(QString("Level %1").arg(current_level));
+    level->setBrush(QColor("white"));
     level->setFont(UIUtility::getInfoBarnerFont());
-    level->setParent(this);
     level->setParentItem(this);
     level->setPos(currentX, INFO_HEIGHT/2 - level->boundingRect().height() / 2);
 
@@ -92,12 +87,12 @@ void InfoBanner::initializeText()
 
 void InfoBanner::initializerItems()
 {
-    double currentX = 50;
+    double currentX = 30;
     for (const auto &p : HumanPlayer::getInstance()->items()) {
         ItemIcon *i = new ItemIcon(p->name());
         i->setParentItem(this);
         i->setParent(this);
-        i->setPos(currentX, 115);
+        i->setPos(currentX, INFO_HEIGHT + (ITEM_HEIGHT - 40)/2);
         currentX += 130;
     }
 }
@@ -105,8 +100,8 @@ void InfoBanner::initializerItems()
 ItemIcon::ItemIcon(const QString &name)
 {
     this->name = name;
-    this->px = UIUtility::getPixmap("items", name, QSize(70, 70));
     this->setAcceptHoverEvents(true);
+    setOpacity(0.7);
 }
 
 ItemIcon::~ItemIcon()
@@ -116,24 +111,31 @@ ItemIcon::~ItemIcon()
 
 QRectF ItemIcon::boundingRect() const
 {
-    return QRectF(0, 0, 70, 70);
+    return QRectF(0, 0, 40, 40);
 }
 
 void ItemIcon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)
 {
-    painter->drawPixmap(0,0,this->px);
+    painter->drawPixmap(0,0, UIUtility::getPixmap("items", name, QSize(40, 40)));
+    painter->setPen(QColor("white"));
+    painter->drawPath(this->opaqueArea());
 }
 
 void ItemIcon::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    setScale(8 / 7);
+    setOpacity(1.0);
 }
 
 void ItemIcon::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    QPropertyAnimation *ani = new QPropertyAnimation(this, "scale");
+    QPropertyAnimation *ani = new QPropertyAnimation(this, "opacity");
     ani->setDuration(100);
-    ani->setEndValue(1);
+    ani->setEndValue(0.7);
     ani->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
+void ItemIcon::dealScale()
+{
+    this->prepareGeometryChange();
 }
 

@@ -35,12 +35,18 @@ public:
         this->m_general = general;
         generalChanged();
     }
+    QStringList getMarks() const {
+        return marks.keys();
+    }
+    int markNumber(const QString &mark) {
+        return marks[mark];
+    }
 signals:
     void hpChanged();
     void maxHpChanged();
     void generalChanged();
 
-private:
+protected:
     QString m_general;
     int m_max_hp;
     int m_hp;
