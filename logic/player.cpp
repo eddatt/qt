@@ -28,5 +28,5 @@ HumanPlayer::~HumanPlayer()
 HumanPlayer::HumanPlayer()
     :m_magic(2),m_max_magic(2),m_power(0),m_agility(0),m_intelligence(0)
 {
-
+    m_items << new Item("cpp");
 }

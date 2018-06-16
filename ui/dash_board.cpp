@@ -2,6 +2,7 @@
 #include "uiutility.h"
 #include "logic/player.h"
 #include "PlayerAvatarContainer.h"
+#include "carditem.h"
 
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
@@ -99,6 +100,13 @@ void DashBoard::updateMark(const QString &name)
         this->setPos(UIUtility::getGraphicsSceneRect().width() - marks_key.length() * 40 + 60, 0);
         marks_value << item;
     }
+}
+
+void DashBoard::manipulateCardItem()
+{
+    card_items.clear();
+    //@to_do:finish this function.
+    
 }
 
 QRectF MarkItem::boundingRect() const

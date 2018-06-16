@@ -1,6 +1,7 @@
 #include <infobarner.h>
 #include <QPainter>
-#include <QPropertyAnimation>
+#include <QGraphicsItemAnimation>
+#include <QTransform>
 
 #include "logic/item.h"
 #include "gamescene.h"
@@ -123,15 +124,16 @@ void ItemIcon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
 void ItemIcon::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    setOpacity(1.0);
+    auto transform = QTransform::fromScale(1.2, 1.2);
+    setTransformOriginPoint(boundingRect().center());
+    setTransform(transform);
 }
 
 void ItemIcon::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    QPropertyAnimation *ani = new QPropertyAnimation(this, "opacity");
-    ani->setDuration(100);
-    ani->setEndValue(0.7);
-    ani->start(QAbstractAnimation::DeleteWhenStopped);
+    auto transform = QTransform::fromScale(1, 1);
+    setTransformOriginPoint(boundingRect().center());
+    setTransform(transform);
 }
 
 void ItemIcon::dealScale()

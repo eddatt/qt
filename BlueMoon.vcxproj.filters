@@ -72,6 +72,9 @@
     <ClCompile Include="ui\PlayerAvatarContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ui\carditem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="BlueMoon.qrc">
@@ -107,6 +110,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="ui\PlayerAvatarContainer.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ui\carditem.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

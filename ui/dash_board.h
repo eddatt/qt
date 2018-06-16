@@ -2,6 +2,7 @@
 #include <QGraphicsObject>
 #include <QGraphicsSimpleTextItem>
 
+class CardItem;
 class HpBar;
 class PlayerAvatarContainer;
 class MarkItem final : public QGraphicsObject {
@@ -57,6 +58,7 @@ public:
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */) override;
 
     void createMarkRegion();
+    void manipulateCardItem();
 
 public slots:
     void updateMark(const QString &name);
@@ -66,4 +68,5 @@ private:
     HpBar *bar;
     MagicIndexItem *magic_item;
     PlayerAvatarContainer *container;
+    QList<CardItem *> card_items;
 };
