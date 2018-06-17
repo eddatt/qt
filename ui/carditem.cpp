@@ -1,34 +1,37 @@
 #include "carditem.h"
 #include "uiutility.h"
+#include "logic/card.h"
+
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsScene>
+#include <QGraphicsDropShadowEffect>
 
-CardItem::CardItem(const QString &cardname)
-    :card_name(cardname), is_pop(false), in_animation(false)
+CardItem::CardItem(Card *c)
+    :card(c), is_pop(false), in_animation(false), deleting(false)
 {
+    name = c->name();
     QObject::connect(this, &QGraphicsObject::enabledChanged, [this]() {
         setOpacity(this->isEnabled() ? 1 : 0.3);
     });
-    boundary = new QGraphicsRectItem(boundary);
-    static QPen tmp;
-    tmp.setWidth(5);
-    tmp.setColor("white");
-    boundary->setPen(tmp);
-    boundary->setOpacity(0.5);
-    boundary->setParentItem(this);
-    boundary->hide();
+    boundary = new QGraphicsDropShadowEffect(this);
+    boundary->setOffset(0);
+    boundary->setBlurRadius(18);
+    boundary->setColor("white");
+    boundary->setEnabled(false);
+    setGraphicsEffect(boundary);
+    setZValue(3);
+    setAcceptHoverEvents(true);
 }
 
 QRectF CardItem::boundingRect() const
 {
-    return QRectF(0, 0, 177, 233);
+    return QRectF(0, 0, 97, 134);
 }
 
 void CardItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)
 {
-    painter->drawPixmap(0,0, UIUtility::getPixmap("cards", card_name, QSize(boundingRect().width(), boundingRect().height())));
-    boundary->hide();
+    painter->drawPixmap(2,2, UIUtility::getPixmap("cards", name));
 }
 
 CardItem::~CardItem()
@@ -43,52 +46,85 @@ void CardItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void CardItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(!in_animation)
+    if(!in_animation && !deleting)
         emit clicked();
 }
 
 void CardItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    boundary->show();
+    setZValue(10);
+    if (is_pop) return;
+    boundary->setEnabled(true);
 }
 
 void CardItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    boundary->hide();
+    setZValue(3);
+    if (is_pop) return;
+    boundary->setEnabled(false);
 }
 
-void CardItem::animateMoveTo(qreal x, qreal y, int duration)
+QTimeLine * CardItem::animateMoveTo(qreal x, qreal y, int duration, QTimeLine *out)
 {
     QGraphicsItemAnimation *anima = new QGraphicsItemAnimation(this);
-    QTimeLine *tl = new QTimeLine(duration,this);
+    QTimeLine *tl;
+    if (out == nullptr)
+        tl = new QTimeLine(duration, this);
+    else
+        tl = out;
+    QObject::connect(tl, &QTimeLine::finished, tl, &QTimeLine::deleteLater);
     tl->setFrameRange(0, 200);
     anima->setTimeLine(tl);
     anima->setItem(this);
     qreal deltax = x - this->x();
     qreal deltay = y - this->y();
-    for (int i = 0; i <= 200; ++i) {
-        anima->setPosAt(i,QPointF(this->x() + deltax * i / 200, this->y() + deltay * i / 200));
+    for (int i = 0; i <= tl->endFrame(); ++i) {
+        anima->setPosAt(double(i)/tl->endFrame(),QPointF(this->x() + deltax * i / 200, this->y() + deltay * i / 200));
     }
-    QObject::connect(tl, &QTimeLine::finished, tl, &QTimeLine::deleteLater);
-    QObject::connect(tl, &QTimeLine::finished, anima, &QTimeLine::deleteLater);
-    if (x > this->scene()->width() || y > this->scene()->height()) {
-        QObject::connect(tl, &QTimeLine::finished, this, &CardItem::outofScene);
+    QObject::connect(tl, &QTimeLine::finished, anima, &QGraphicsItemAnimation::deleteLater);
+    if (x > UIUtility::getGraphicsSceneRect().width() || y > UIUtility::getGraphicsSceneRect().height()) {
+        QObject::connect(tl, &QTimeLine::finished, [this]() {
+            emit this->outofScene(deleting);
+        });
     }
-    QObject::connect(tl, &QTimeLine::finished, [this]() {
-        this->in_animation = false;
-    });
-    in_animation = true;
-    tl->start();
+    QObject::connect(tl, &QTimeLine::stateChanged, this, &CardItem::dealAnimationStatedChanged);
+    return tl;
 }
 
 void CardItem::pop()
 {
+    if (deleting) return;
+    if (is_pop) return;
+    animateMoveTo(this->x(), this->y() - 30, 200)->start();
+    boundary->setColor("gold");
+    boundary->setEnabled(true);
     is_pop = true;
-    animateMoveTo(this->x(), this->y() + 50, 100);
 }
 
-void CardItem::reset_pop()
+void CardItem::resetPop()
 {
-    is_pop = true;
-    animateMoveTo(this->x(), this->y() - 50, 100);
+    if (deleting) return;
+    if (!is_pop) return;
+    is_pop = false;
+    animateMoveTo(this->x(), this->y() + 30, 200)->start();
+    boundary->setColor("white");
+    boundary->setEnabled(false);
 }
+
+void CardItem::dealAnimationStatedChanged(QTimeLine::State newState)
+{
+    if (newState == QTimeLine::Running)
+        in_animation = true;
+    else
+        in_animation = false;
+}
+
+void CardItem::decoupled()
+{
+    deleting = true;
+    setEnabled(false);
+    hide();
+    setParentItem(nullptr);
+    delete this;
+}
+

@@ -11,12 +11,14 @@ public:
 
     virtual bool isAvailable(AbstractPlayer *player) const;
 
-    CardItem *generateItem() const;
+    CardItem *cardItem() const;
+    QString name() const;
 
     virtual void doEffect(AbstractPlayer *self, AbstractPlayer *target);
 
 protected:
-    QString name;
+    QString m_name;
+    CardItem *item;
 
 };
 

@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QFont>
 #include <QImage>
+#include <QMessageBox>
 
 QPixmap UIUtility::getPixmap(const QString &type, const QString &name, const QSize &size, bool white_and_black)
 {
@@ -34,7 +35,7 @@ QPixmap UIUtility::getPixmap(const QString &type, const QString &name, const QSi
 
     }
     else {
-
+        QMessageBox::warning(nullptr, "image not found", QString("Can not find the Image %1").arg(path));
     }
     return QPixmap();
 }

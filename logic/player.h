@@ -31,23 +31,31 @@ public:
     inline QString general() const {
         return m_general;
     }
-    void setGeneral(const QString &general) {
-        this->m_general = general;
-        generalChanged();
-    }
+    void setGeneral(const QString &general);
     QStringList getMarks() const {
         return marks.keys();
     }
     int markNumber(const QString &mark) {
         return marks[mark];
     }
+    inline bool alive() const {
+        return m_alive;
+    }
+    void setAlive(bool alive) {
+        this->m_alive = alive;
+        emit aliveChanged(alive);
+    }
+    void addMark(const QString &mark, int n = 1);
+    void removeMark(const QString &mark, int n = 1);
 signals:
     void hpChanged();
     void maxHpChanged();
     void generalChanged();
-
+    void aliveChanged(bool);
+    void MarkChanged(QString);
 protected:
     QString m_general;
+    bool m_alive;
     int m_max_hp;
     int m_hp;
     QList<Skill *> skills;
@@ -110,6 +118,10 @@ public:
     inline const QList<Item *> &items() {
         return m_items;
     };
+
+    inline const QList<Card *> &cards() {
+        return m_cards;
+    }
 signals:
     void magicChanged();
     void maxMagicChanged();
@@ -127,6 +139,6 @@ private:
 
     QList<Item *> m_items;
 
-    QList<Card *> cards;
+    QList<Card *> m_cards;
 };
 

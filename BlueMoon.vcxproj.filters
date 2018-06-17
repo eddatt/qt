@@ -63,9 +63,6 @@
     <ClCompile Include="ui\uiutility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ui\infobarner.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="ui\dash_board.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -73,6 +70,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ui\carditem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\infobarner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

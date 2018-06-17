@@ -1,16 +1,20 @@
 #pragma once
 
 #include <QGraphicsObject>
-#include <QGraphicsRectItem>
 #include <QGraphicsItemAnimation>
 #include <QTimeLine>
+
+class Card;
+enum QTimeLine::State;
+
+class QGraphicsDropShadowEffect;
 
 class CardItem : public QGraphicsObject
 {
     Q_OBJECT
 
 public:
-    CardItem(const QString &cardname);
+    CardItem(Card *card);
 
     virtual QRectF boundingRect() const override;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */) override;
@@ -23,16 +27,25 @@ public:
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
-    void animateMoveTo(qreal x, qreal y, int duration);
+    Card *cardInfo() const {
+        return card;
+    }
+
+    QTimeLine *animateMoveTo(qreal x, qreal y, int duration, QTimeLine *out = nullptr);
     void pop();
-    void reset_pop();
+    void resetPop();
+
+public slots:
+    void dealAnimationStatedChanged(QTimeLine::State newState);
+    void decoupled();
 signals:
     void clicked();
-    void outofScene();
+    void outofScene(bool);
 private:
+    bool deleting;
     bool is_pop;
     bool in_animation;
-    QString card_name;
-    QGraphicsRectItem *boundary;
-   
+    QGraphicsDropShadowEffect *boundary;
+    QString name;
+    Card *card;
 };

@@ -39,7 +39,6 @@ InfoBanner::~InfoBanner()
 }
 
 InfoBanner::InfoBanner()
-    :current_level(0)
 {
     
     initializeText();
@@ -78,7 +77,7 @@ void InfoBanner::initializeText()
     currentX += player_property->boundingRect().width() + 100;
 
     this->level = new QGraphicsSimpleTextItem;
-    level->setText(QString("Level %1").arg(current_level));
+    level->setText(QString("Level %1").arg(0));
     level->setBrush(QColor("white"));
     level->setFont(UIUtility::getInfoBarnerFont());
     level->setParentItem(this);
@@ -98,11 +97,15 @@ void InfoBanner::initializerItems()
     }
 }
 
+void InfoBanner::updateLevel(int level)
+{
+    this->level->setText(QString("Level %1").arg(level));
+}
+
 ItemIcon::ItemIcon(const QString &name)
 {
     this->name = name;
     this->setAcceptHoverEvents(true);
-    setOpacity(0.7);
 }
 
 ItemIcon::~ItemIcon()

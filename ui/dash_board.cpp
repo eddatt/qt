@@ -3,9 +3,11 @@
 #include "logic/player.h"
 #include "PlayerAvatarContainer.h"
 #include "carditem.h"
+#include "logic/card.h"
 
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsScene>
 
 
 /*
@@ -30,7 +32,7 @@ QRectF DashBoard::boundingRect() const
 
 void DashBoard::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)
 {
-    painter->drawRect(boundingRect());
+    //painter->drawRect(boundingRect());
 }
 
 DashBoard::~DashBoard()
@@ -45,16 +47,33 @@ DashBoard::DashBoard()
     magic_item->setParent(this);
     magic_item->setParentItem(this);
     magic_item->setPos(UIUtility::getGraphicsSceneRect().width() - (250 - magic_item->boundingRect().width() / 2), 
-        127 - magic_item->boundingRect().height() / 2);
+        127 - magic_item->boundingRect().height() / 2 - 10);
+
+    QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::magicChanged, magic_item,&MagicIndexItem::updateMagic);
+    QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::maxMagicChanged, magic_item, &MagicIndexItem::updateMagic);
     bar = new HpBar(this->sceneBoundingRect().width(),HumanPlayer::getInstance()->maxHp(),HumanPlayer::getInstance()->hp());
     bar->setParent(this);
     bar->setParentItem(this);
     bar->setPos(0, this->boundingRect().height() - bar->boundingRect().height() - 5);
 
+    QObject::connect(HumanPlayer::getInstance(), &AbstractPlayer::hpChanged, [this]() {
+        this->bar->setCurrentHp(HumanPlayer::getInstance()->hp());
+    });
+    QObject::connect(HumanPlayer::getInstance(), &AbstractPlayer::maxHpChanged, [this]() {
+        this->bar->setHp(HumanPlayer::getInstance()->hp(), HumanPlayer::getInstance()->maxHp());
+    });
+
     container = new PlayerAvatarContainer(HumanPlayer::getInstance());
     container->setParent(this);
     container->setParentItem(this);
     container->setPos(0, 0);
+
+    QObject::connect(HumanPlayer::getInstance(), &AbstractPlayer::aliveChanged, container, &PlayerAvatarContainer::updateAlive);
+
+    card_manager = new CardItemManager;
+    card_manager->setParent(this);
+    card_manager->setParentItem(this);
+    card_manager->setPos(container->boundingRect().width() + 5, 0);
 }
 
 void DashBoard::createMarkRegion()
@@ -102,11 +121,19 @@ void DashBoard::updateMark(const QString &name)
     }
 }
 
-void DashBoard::manipulateCardItem()
+void DashBoard::addCardItem(CardItem *add)
 {
-    card_items.clear();
-    //@to_do:finish this function.
-    
+    this->card_manager-> addCardItem(add);
+}
+
+void DashBoard::removeCardItem(CardItem *re)
+{
+    this->card_manager->removeCardItem(re);
+}
+
+void DashBoard::setCurrent(bool current)
+{
+
 }
 
 QRectF MarkItem::boundingRect() const
@@ -214,3 +241,139 @@ void MagicIndexItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     emit clicked();
 }
 
+void CardItemManager::updateCardItemLayout()
+{
+    // QRectF(0, 0, 177, 233)
+    double from_x = boundingRect().center().x() -(card_items.length() / 2.0) * 93;
+    QTimeLine *tl = new QTimeLine(500,this);
+    QObject::connect(tl, &QTimeLine::finished, tl, &QTimeLine::deleteLater);
+    for (auto &c : card_items) {
+        c->animateMoveTo(from_x, c->y(), 200, tl);
+        c->setEnabled(true);
+        from_x += 93;
+    }
+    tl->start();
+}
+
+CardItemManager::CardItemManager()
+    :current_activate(nullptr)
+{
+    QList<CardItem *> tmp;
+    for (auto &c : HumanPlayer::getInstance()->cards()) {
+        tmp << c->cardItem();
+    }
+    addCardItems(tmp);
+}
+
+CardItemManager::~CardItemManager()
+{
+}
+
+QRectF CardItemManager::boundingRect() const
+{
+    return QRectF(0, 0, UIUtility::getGraphicsSceneRect().width() -  440, 238);
+}
+
+void CardItemManager::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)
+{
+
+}
+
+QList<CardItem *> CardItemManager::cardItems()
+{
+    return card_items;
+}
+
+void CardItemManager::addCardItems(const QList<CardItem *> &items)
+{
+    for (auto &c : items) {
+        c->setParentItem(this);
+        //c->setPos(0, 0);
+        c->setPos(-100, boundingRect().center().y() - c->boundingRect().center().y());
+        QObject::connect(c, &CardItem::clicked, this, &CardItemManager::onSelectCard);
+        card_items << c;
+    }
+    updateCardItemLayout();
+}
+
+void CardItemManager::addCardItem(CardItem *add)
+{
+    if (card_items.contains(add)) return;
+    add->setParentItem(this);
+    add->setPos(-1 - x() - add->boundingRect().x(), boundingRect().center().y() - add->boundingRect().center().y());
+    card_items << add;
+    QObject::connect(add, &CardItem::clicked, this, &CardItemManager::onSelectCard);
+    updateCardItemLayout();
+}
+
+void CardItemManager::removeAllCardItem()
+{
+    unselectCard();
+    QTimeLine *tl = new QTimeLine(500);
+    QObject::connect(tl, &QTimeLine::finished, tl, &QTimeLine::deleteLater);
+    for (auto &c : card_items) {
+        c->animateMoveTo(this->scene()->width() + 100, c->y(), 200, tl);
+        QObject::disconnect(c, &CardItem::clicked, this, &CardItemManager::onSelectCard);
+        QObject::connect(tl, &QTimeLine::finished, c, &CardItem::decoupled);
+    }
+    tl->start();
+    card_items.clear();
+}
+
+void CardItemManager::removeCardItem(CardItem *re)
+{
+    if (card_items.contains(re)) {
+        if (current_activate == re)
+            unselectCard();
+        card_items.removeAll(re);
+        auto tl = re->animateMoveTo(this->scene()->width() + 100, re->y(), 500);
+        QObject::disconnect(re, &CardItem::clicked, this, &CardItemManager::onSelectCard);
+        QObject::connect(tl, &QTimeLine::finished, re, &CardItem::decoupled);
+        tl->start();
+    }
+    updateCardItemLayout();
+}
+
+void CardItemManager::useCardAnimation()
+{
+        
+}
+
+void CardItemManager::selectCard(CardItem *item)
+{
+    if (item == currentSelected()) {
+        unselectCard();
+        emit selectChanged(false);
+        return;
+    }
+    unselectCard();
+    this->current_activate = item;
+    item->pop();
+    emit selectChanged(true);
+    for (auto &c : card_items) {
+        if (c == item) continue;
+        //c->setEnabled(false);
+    }
+}
+
+void CardItemManager::onSelectCard()
+{
+    selectCard(qobject_cast<CardItem *>(sender()));
+}
+
+CardItem * CardItemManager::currentSelected() const
+{
+    return current_activate;
+}
+
+void CardItemManager::unselectCard()
+{
+    if (current_activate) {
+        current_activate->resetPop();
+        emit selectChanged(false);
+    }
+    current_activate = nullptr;
+    for (auto &c : card_items) {
+        //c->setEnabled(true);
+    }
+}

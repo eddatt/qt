@@ -8,17 +8,15 @@ class Skill;
 
 struct General {
     QString name;
-    QList<Skill *> skills;
+    //QList<Skill *> skills;
     int max_hp;
     int pwr_plus;
     int agility_plus;
     int intelligence_plus;
 };
 
-struct GameInfo {
-    int level;
-    QList<General *> ais;
-};
+class AbstractPlayer;
+class AI;
 
 class GameLogic : public QObject
 {
@@ -30,18 +28,25 @@ public:
 
     QStringList getAllGenerals() const;
 
-    void prepareGameScene(const GameInfo &info) const;
+    void prepareGameScene(int level, const QStringList &ai_info);
 
     inline int currentLevel() const {
-        return current_info.level;
+        return current_level;
     }
+
+    QList<AI *> aliveAIs() const;
+    QList<AbstractPlayer *> alivePlayers() const;
+
+    static QHash<QString, General*> generals;
+
+signals:
+    void gameReady() const;
 
 private:
     GameLogic(QObject *parent);
-    QHash<QString, General*> generals;
-
-    GameInfo current_info;
-
+    int current_level;
+    QList<AI *> alive_ais;
+    QList<AbstractPlayer *> alive_players;
 
     bool is_run;
 };

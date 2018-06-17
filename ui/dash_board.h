@@ -5,6 +5,7 @@
 class CardItem;
 class HpBar;
 class PlayerAvatarContainer;
+
 class MarkItem final : public QGraphicsObject {
     Q_OBJECT
 public:
@@ -49,6 +50,37 @@ private:
 };
 
 
+class CardItemManager final : public QGraphicsObject {
+    Q_OBJECT
+public:
+    CardItemManager();
+    ~CardItemManager();
+    virtual QRectF boundingRect() const override;
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */) override;
+
+    QList<CardItem *> cardItems();
+
+    CardItem *currentSelected() const;
+
+    void selectCard(CardItem *item);
+    void unselectCard();
+signals:
+    void selectChanged(bool is_select);
+public slots:
+    void updateCardItemLayout();
+    void addCardItems(const QList<CardItem *> &items);
+    void addCardItem(CardItem *add);
+    void removeCardItem(CardItem *re);
+    void removeAllCardItem();
+
+    void useCardAnimation();
+    void onSelectCard();
+private:
+    CardItem * current_activate;
+    QList<CardItem *> card_items;
+};
+
+
 class DashBoard final : public QGraphicsObject {
     Q_OBJECT
 public:
@@ -58,15 +90,27 @@ public:
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */) override;
 
     void createMarkRegion();
-    void manipulateCardItem();
 
+    void addCardItem(CardItem *add);
+    void removeCardItem(CardItem *re);
+
+    CardItemManager *cardItemManager() const {
+        return card_manager;
+    }
+
+    CardItem *currentSelectCard() const {
+        return card_manager->currentSelected();
+    }
+    
 public slots:
-    void updateMark(const QString &name);
+    void updateMark(const QString &markk);
+    void setCurrent(bool current);
 private:
     QStringList marks_key;
     QList<MarkItem *> marks_value;
+
     HpBar *bar;
     MagicIndexItem *magic_item;
     PlayerAvatarContainer *container;
-    QList<CardItem *> card_items;
+    CardItemManager *card_manager;
 };
