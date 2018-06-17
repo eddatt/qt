@@ -48,5 +48,7 @@ private:
     QList<AI *> alive_ais;
     QList<AbstractPlayer *> alive_players;
 
+    QMap<int, QStringList> level_info;
+
     bool is_run;
 };

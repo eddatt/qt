@@ -122,6 +122,10 @@ public:
     inline const QList<Card *> &cards() {
         return m_cards;
     }
+
+    void drawCard(int n);
+    void discardWholeHandcard();
+    void discardOneCard(Card *card);
 signals:
     void magicChanged();
     void maxMagicChanged();

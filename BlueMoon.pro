@@ -18,22 +18,5 @@ MOC_DIR += ./GeneratedFiles/$(ConfigurationName)
 OBJECTS_DIR += debug
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
+include(BlueMoon.pri)
 win32:RC_FILE = BlueMoon.rc
-HEADERS += ./logic/card.h \
-    ./logic/item.h \
-    ./logic/skill.h \
-    ./bluemoon.h \
-    ./ui/startscene.h \
-    ./logic/gamelogic.h \
-    ./ui/button.h \
-    ./logic/player.h
-SOURCES += ./bluemoon.cpp \
-    ./logic/card.cpp \
-    ./logic/item.cpp \
-    ./logic/gamelogic.cpp \
-    ./main.cpp \
-    ./logic/player.cpp \
-    ./logic/skill.cpp \
-    ./ui/button.cpp \
-    ./ui/startscene.cpp
-RESOURCES += BlueMoon.qrc

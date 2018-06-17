@@ -49,7 +49,6 @@ InfoBanner::InfoBanner()
 void InfoBanner::initializeText()
 {
     this->general_name = new QGraphicsSimpleTextItem;
-    general_name->setText(HumanPlayer::getInstance()->general());
     general_name->setBrush(QColor("white"));
     general_name->setFont(UIUtility::getInfoBarnerFont());
     general_name->setParentItem(this);
@@ -58,7 +57,6 @@ void InfoBanner::initializeText()
     double currentX = 50 + general_name->boundingRect().width() + 50;
 
     this->Hp = new QGraphicsSimpleTextItem;
-    Hp->setText(QString("%1 / %1").arg(HumanPlayer::getInstance()->hp()).arg(HumanPlayer::getInstance()->maxHp()));
     Hp->setBrush(QColor("red"));
     Hp->setFont(UIUtility::getInfoBarnerFont());
     Hp->setParentItem(this);
@@ -66,9 +64,6 @@ void InfoBanner::initializeText()
     currentX += Hp->boundingRect().width() + 100;
 
     this->player_property = new QGraphicsTextItem;
-    player_property->setHtml(QString("<font color = \"red\">%1</font> / <font color = \"green\">%2</font> / <font color = \"blue\">%3</font>").arg(
-        QString::number(HumanPlayer::getInstance()->power()), QString::number(HumanPlayer::getInstance()->agility()), QString::number(HumanPlayer::getInstance()->intelligence())
-    ));
     player_property->setFont(UIUtility::getInfoBarnerFont());
     player_property->setParent(this);
     player_property->setParentItem(this);
@@ -83,6 +78,16 @@ void InfoBanner::initializeText()
     level->setParentItem(this);
     level->setPos(currentX, INFO_HEIGHT/2 - level->boundingRect().height() / 2);
 
+    connect(HumanPlayer::getInstance(), &HumanPlayer::generalChanged, this, &InfoBanner::updateGeneral);
+    connect(HumanPlayer::getInstance(), &HumanPlayer::hpChanged, this, &InfoBanner::updateHp);
+    connect(HumanPlayer::getInstance(), &HumanPlayer::maxHpChanged, this, &InfoBanner::updateHp);
+    connect(HumanPlayer::getInstance(), &HumanPlayer::agilityChanged, this, &InfoBanner::updateProperty);
+    connect(HumanPlayer::getInstance(), &HumanPlayer::powerChanged, this, &InfoBanner::updateProperty);
+    connect(HumanPlayer::getInstance(), &HumanPlayer::intelligenceChanged, this, &InfoBanner::updateProperty);
+
+    updateGeneral();
+    updateHp();
+    updateProperty();
 }
 
 void InfoBanner::initializerItems()
@@ -100,6 +105,23 @@ void InfoBanner::initializerItems()
 void InfoBanner::updateLevel(int level)
 {
     this->level->setText(QString("Level %1").arg(level));
+}
+
+void InfoBanner::updateProperty()
+{
+    player_property->setHtml(QString("<font color = \"red\">%1</font> / <font color = \"green\">%2</font> / <font color = \"blue\">%3</font>").arg(
+        QString::number(HumanPlayer::getInstance()->power()), QString::number(HumanPlayer::getInstance()->agility()), QString::number(HumanPlayer::getInstance()->intelligence())
+    ));
+}
+
+void InfoBanner::updateHp()
+{
+    Hp->setText(QString("%1 / %1").arg(HumanPlayer::getInstance()->hp()).arg(HumanPlayer::getInstance()->maxHp()));
+}
+
+void InfoBanner::updateGeneral()
+{
+    general_name->setText(HumanPlayer::getInstance()->general());
 }
 
 ItemIcon::ItemIcon(const QString &name)

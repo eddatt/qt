@@ -38,9 +38,10 @@ public:
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */) override;
 public slots:
     void updateLevel(int level);
+    void updateProperty();
+    void updateHp();
+    void updateGeneral();
 private:
-    
-
     void initializeText();
     void initializerItems();
 
