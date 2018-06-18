@@ -71,16 +71,37 @@ void GameLogic::setGameScene(GameScene *scene)
     this->game_scene = scene;;
 }
 
-void GameLogic::prepareGameScene(int level, const QStringList &ai_info)
+void GameLogic::prepareGameScene(int level)
 {
+	QList<int> l;
+	if (level == 1) {
+		l.push_back(0);
+	}
+	else if (level == 2) {
+		l.push_back(1);
+		l.push_back(4);
+	}
+	else if (level == 3) {
+		l.push_back(2);
+		l.push_back(4);
+	}
+	else if (level == 4) {
+		l.push_back(3);
+		l.push_back(3);
+		l.push_back(5);
+	}
+	else if (level == 5) {
+		l.push_back(6);
+		l.push_back(3);
+		l.push_back(5);
+	}
     for (auto &p : alive_ais) {
         delete p;
     }
     alive_ais.clear();
     this->current_level = level;
-    for (auto &c : ai_info) {
-        auto nai = new AI();
-        nai->setGeneral(c);
+    for (auto &c : l) {
+        auto nai = new AI(c);
         alive_ais << nai;
     }
     emit gameReady();
