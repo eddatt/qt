@@ -253,6 +253,16 @@ AI::~AI()
 
 }
 
+QString AI::general() const
+{
+    return m_name;
+}
+
+void AI::setGeneral(const QString &)
+{
+
+}
+
 QMap<AI::Operation, int> AI::getCurrentOperation() const
 {
 	int k = rd() % 100;

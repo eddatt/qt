@@ -28,10 +28,10 @@ public:
         this->m_max_hp = new_max_hp;
         maxHpChanged();
     }
-    inline QString general() const {
+    virtual inline QString general() const {
         return m_general;
     }
-    void setGeneral(const QString &general);
+    virtual void setGeneral(const QString &general);
     QStringList getMarks() const {
         return marks.keys();
     }
@@ -78,6 +78,9 @@ public:
     enum class Operation {
         Attack, Defense
     };
+
+    virtual inline QString general() const override;
+    virtual void setGeneral(const QString &) override;
 
     QMap<AI::Operation,int> getCurrentOperation() const;
 
