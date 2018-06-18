@@ -1,6 +1,7 @@
 #include "player.h"
 #include "item.h"
 #include "card.h"
+#include "gamelogic.h"
 #include <QMap>
 #include <random>
 
@@ -30,6 +31,8 @@ void AbstractPlayer::setGeneral(const QString &general)
 {
     this->m_general = general;
     generalChanged();
+	setMaxHp(GameLogic::generals[general].max_hp);
+	setHp(GameLogic::generals[general].max_hp);
     //setMaxHp()
 }
 
@@ -57,6 +60,15 @@ HumanPlayer * HumanPlayer::getInstance()
 HumanPlayer::~HumanPlayer()
 {
 
+}
+
+void HumanPlayer::setGeneral(const QString & name)
+{
+
+	HumanPlayer::setAgility(GameLogic::generals[name].agility_plus);
+	HumanPlayer::setPower(GameLogic::generals[name].pwr_plus);
+	HumanPlayer::setIntelligence(GameLogic::generals[name].intelligence_plus);
+	AbstractPlayer::setGeneral(name);
 }
 
 void HumanPlayer::drawCard(int n)
@@ -261,7 +273,7 @@ QString AI::general() const
 
 void AI::setGeneral(const QString &)
 {
-
+	emit generalChanged();
 }
 
 QMap<AI::Operation, int> AI::getCurrentOperation() const

@@ -44,6 +44,30 @@ void GameLogic::start()
 GameLogic::GameLogic(QObject *parent)
     : QObject(parent), is_run(false),current_player(nullptr), game_scene(nullptr)
 {
+	General a, b, c;
+	a.name = "ZhaZhaHui";
+	a.max_hp = 80;
+	a.pwr_plus = 0;
+	a.agility_plus = 0;
+	a.intelligence_plus = 0;
+
+	b.name = "GuTianLe";
+	b.max_hp = 70;
+	b.pwr_plus = 0;
+	b.agility_plus = 0;
+	b.intelligence_plus = 0;
+
+	c.name = "ChenXiaoChun";
+	c.max_hp = 60;
+	c.pwr_plus = 0;
+	c.agility_plus = 0;
+	c.intelligence_plus = 1;
+
+	generals["ZhaZhaHui"] = a;
+	generals["GuTianLe"] = b;
+	generals["ChenXiaoChun"] = c;
+
+
     QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::endRound, &event_loop, &QEventLoop::quit);
     QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::cardUsed, this, &GameLogic::playerUseCard);
 }
