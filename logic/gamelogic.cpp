@@ -14,6 +14,7 @@ void GameLogic::startGame()
     if (current_player == nullptr) {
         current_player = HumanPlayer::getInstance();
     }
+    is_run = true;
     current_player->removeMark("@defense", current_player->markNumber("@defense"));
     for(auto &p :alive_ais)
         showAIPurpose(p);
