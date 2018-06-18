@@ -109,7 +109,7 @@ public:
         return m_magic;
     }
     void setMagic(int mg) {
-        mg = qMax<int>(mg, m_max_magic);
+        mg = qMin<int>(mg, m_max_magic);
         this->m_magic = mg;
         magicChanged();
     }

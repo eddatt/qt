@@ -22,6 +22,7 @@ CardItem::CardItem(Card *c)
     setGraphicsEffect(boundary);
     setZValue(3);
     setAcceptHoverEvents(true);
+    setAvailable(card->isAvailable());
 }
 
 QRectF CardItem::boundingRect() const
@@ -37,7 +38,6 @@ void CardItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 CardItem::~CardItem()
 {
     delete boundary;
-    delete card;
 }
 
 void CardItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -138,7 +138,7 @@ void CardItem::decoupled()
     deleting = true;
     setEnabled(false);
     hide();
+    setParent(nullptr);
     setParentItem(nullptr);
-    this->deleteLater();
 }
 

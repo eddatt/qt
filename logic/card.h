@@ -60,6 +60,8 @@ public:
 	virtual bool targetFix() const;
 	virtual bool filterTarget(AbstractPlayer *target) const;
 	virtual void doEffect(AbstractPlayer *target);
+
+    virtual bool isAvailable() const;
 };
 
 class Guisuo:public Card {

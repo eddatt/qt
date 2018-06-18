@@ -13,11 +13,13 @@ void GameLogic::startGame()
         return;
     if (current_player == nullptr) {
         current_player = HumanPlayer::getInstance();
-        current_player->alive();
     }
-    this->start();
-    HumanPlayer::getInstance()->drawCard(4);
+    current_player->removeMark("@defense", current_player->markNumber("@defense"));
+    for(auto &p :alive_ais)
+        showAIPurpose(p);
     HumanPlayer::getInstance()->setMagic(HumanPlayer::getInstance()->maxMagic());
+    HumanPlayer::getInstance()->drawCard(4);
+    
 }
 
 void GameLogic::newRound()
@@ -39,12 +41,16 @@ void GameLogic::newRound()
     }
     current_player = HumanPlayer::getInstance();
     current_player->setCurrent(true);
-    HumanPlayer::getInstance()->drawCard(4);
+    for (auto &p : alive_ais)
+        showAIPurpose(p);
+    current_player->removeMark("@defense", current_player->markNumber("@defense"));
     HumanPlayer::getInstance()->setMagic(HumanPlayer::getInstance()->maxMagic());
+    HumanPlayer::getInstance()->drawCard(4);
+
 }
 
 GameLogic::GameLogic(QObject *parent)
-    : QThread(parent), is_run(false),current_player(nullptr), game_scene(nullptr)
+    : QObject(parent), is_run(false),current_player(nullptr), game_scene(nullptr)
 {
 	General a, b, c;
 	a.name = "ZhaZhaHui";
@@ -75,6 +81,14 @@ GameLogic::GameLogic(QObject *parent)
 
     alive_players << HumanPlayer::getInstance();
 
+}
+
+void GameLogic::freeGarbage()
+{
+    for (auto &p : garbage) {
+        delete p;
+    }
+    garbage.clear();
 }
 
 GameLogic * GameLogic::getInstance()
@@ -163,7 +177,6 @@ QList<AbstractPlayer *> GameLogic::alivePlayers() const
 void GameLogic::damage(AbstractPlayer *from, AbstractPlayer *to, int n /*= 1*/)
 {
     //deal defense
-    msleep(300);
     if (to->markNumber("@defense") >= n) {
         to->removeMark("@defense", n);
         return;
@@ -179,7 +192,6 @@ void GameLogic::damage(AbstractPlayer *from, AbstractPlayer *to, int n /*= 1*/)
 
 void GameLogic::recover(AbstractPlayer *target, int n /*= 1*/)
 {
-    msleep(500);
     int loseHp = target->maxHp() - target->hp();
     if (loseHp == 0)
         return;
@@ -198,9 +210,11 @@ AbstractPlayer * GameLogic::getNextAlive(AbstractPlayer *target)
 
 void GameLogic::killPlayer(AbstractPlayer *player)
 {
-    msleep(1000);
     player->setAlive(false);
     alive_players.removeAll(player);
+    for (auto &m : player->getMarks()) {
+        player->removeMark(m, player->markNumber(m));
+    }
     if (player->inherits("AI")) {
         alive_ais.removeAll(qobject_cast<AI *>(player));
     }
@@ -217,14 +231,11 @@ void GameLogic::killPlayer(AbstractPlayer *player)
 
 void GameLogic::useCardBy(AbstractPlayer *from, AbstractPlayer *to, Card *card)
 {
-    msleep(500);
     // remove Magic
     if (from->inherits("HumanPlayer")) {
         HumanPlayer::getInstance()->setMagic(HumanPlayer::getInstance()->magic() - card->energy());
     }
-    msleep(500);
     card->doEffect(to);
-    msleep(1000);
     HumanPlayer::getInstance()->discardOneCard(card);
 }   
 
@@ -239,7 +250,6 @@ void GameLogic::showAIPurpose(AI *ai)
 void GameLogic::executeAIOpreation(AI *ai)
 {
     for (auto &mark : ai->getMarks()) {
-        msleep(1000);
         if (mark.startsWith("@")) {
             if (mark == "@attack") {
                 damage(ai, HumanPlayer::getInstance(), ai->markNumber(mark));

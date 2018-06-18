@@ -53,6 +53,7 @@ DashBoard::DashBoard()
     QObject::connect(magic_item, &MagicIndexItem::clicked, HumanPlayer::getInstance(), &HumanPlayer::endRound);
     QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::magicChanged, magic_item,&MagicIndexItem::updateMagic);
     QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::maxMagicChanged, magic_item, &MagicIndexItem::updateMagic);
+
     bar = new HpBar(this->sceneBoundingRect().width(),HumanPlayer::getInstance()->maxHp(),HumanPlayer::getInstance()->hp());
     bar->setParent(this);
     bar->setParentItem(this);
@@ -76,13 +77,18 @@ DashBoard::DashBoard()
     card_manager->setParent(this);
     card_manager->setParentItem(this);
     card_manager->setPos(container->boundingRect().width() + 5, 0);
+
+    QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::MarkChanged, this, &DashBoard::updateMark);
 }
 
 void DashBoard::createMarkRegion()
 {
     for (auto &p : marks_value) {
-        if(p)
-            p->deleteLater();
+        if (p) {
+            p->hide();
+            delete p;
+        }
+            
     }    
     marks_key.clear();
     marks_value.clear();
@@ -103,24 +109,7 @@ void DashBoard::createMarkRegion()
 
 void DashBoard::updateMark(const QString &name)
 {
-    if (marks_key.contains(name)) {
-        // update number;
-        if (HumanPlayer::getInstance()->markNumber(name) > 0) {
-            marks_value.at(marks_key.indexOf(name))->setNumber(HumanPlayer::getInstance()->markNumber(name));
-        }
-        else {
-            // create new
-            createMarkRegion();
-        }
-    }
-    else {
-        marks_key << name;
-        MarkItem *item = new MarkItem(name, HumanPlayer::getInstance()->markNumber(name));
-        item->setParent(this);
-        this->setParentItem(this);
-        this->setPos(UIUtility::getGraphicsSceneRect().width() - marks_key.length() * 40 + 60, 0);
-        marks_value << item;
-    }
+    createMarkRegion();
 }
 
 void DashBoard::addCardItem(CardItem *add)
@@ -213,8 +202,7 @@ void MagicIndexItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     tmp.setWidth(5);
     painter->setPen(tmp);
     painter->drawRoundedRect(boundingRect(), 10, 10);
-
-    
+  
 }
 
 MagicIndexItem::~MagicIndexItem()
@@ -366,10 +354,6 @@ void CardItemManager::selectCard(CardItem *item)
     this->current_activate = item;
     item->pop();
     emit selectChanged(true);
-    for (auto &c : card_items) {
-        if (c == item) continue;
-        c->setOpacity(0.8);
-    }
 }
 
 void CardItemManager::onSelectCard()
@@ -389,5 +373,8 @@ void CardItemManager::unselectCard()
         emit selectChanged(false);
     }
     current_activate = nullptr;
+    for (auto &c : card_items) {
+        c->setAvailable(c->cardInfo()->isAvailable());
+    }
     //updateCardItemLayout();
 }

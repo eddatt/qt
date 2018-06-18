@@ -23,7 +23,7 @@ struct General {
 class AbstractPlayer;
 class AI;
 
-class GameLogic : public QThread
+class GameLogic : public QObject
 {
     Q_OBJECT
 
@@ -81,6 +81,8 @@ signals:
 
 private:
     GameLogic(QObject *parent);
+
+    void freeGarbage();
     int current_level;
     QList<AI *> alive_ais;
     QList<AbstractPlayer *> alive_players;
@@ -93,6 +95,8 @@ private:
     AbstractPlayer *current_player;
 
     GameScene *game_scene;
+
+    QList<Card *> garbage;
 
     QMap<QString, General> generals;
 };

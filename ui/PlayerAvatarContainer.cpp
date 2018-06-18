@@ -50,7 +50,7 @@ HpBar::HpBar(double w_width, int max, int current /*= 0*/)
 
 HpBar::~HpBar()
 {
-
+    
 }
 
 

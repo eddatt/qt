@@ -49,6 +49,9 @@ GameScene::GameScene(QObject *parent)
     QObject::connect(win, &GameFinishPrompt::reply, this, &GameScene::dealFinishedReply);
     QObject::connect(lose, &GameFinishPrompt::reply, this, &GameScene::dealFinishedReply);
 
+    win->setZValue(20);
+    lose->setZValue(20);
+
     //win->hide();
     lose->hide();
 
@@ -126,7 +129,6 @@ void GameScene::createAIContainer()
         con->setParent(this);
         this->addItem(con);
         con->setPos(currentX, cy - con->boundingRect().center().y());
-        con->show();
         currentX += (177 + 70);
         ai_containers << con;
     }
@@ -162,6 +164,8 @@ void GameScene::prepareFortargetSelect(bool is_select)
 
 void GameScene::selectReply(AbstractPlayer *player)
 {
+    for (auto & s : ai_containers)
+        s->setTargetSelect(false);
     emit HumanPlayer::getInstance()->cardUsed(dash_board->currentSelectCard()->cardInfo(),player);
 }
 
@@ -266,8 +270,11 @@ void PlayerInfoContainer::setAlive(bool alive)
 void PlayerInfoContainer::createMarkItem()
 {
     for (auto &p : marks_value) {
-        if (p)
-            p->deleteLater();
+        if (p) {
+            p->hide();
+            delete p;
+        }
+            
     }
     marks_key.clear();
     marks_value.clear();
@@ -287,24 +294,7 @@ void PlayerInfoContainer::createMarkItem()
 
 void PlayerInfoContainer::updateMark(const QString &name)
 {
-    if (marks_key.contains(name)) {
-        // update number;
-        if (HumanPlayer::getInstance()->markNumber(name) > 0) {
-            marks_value.at(marks_key.indexOf(name))->setNumber(HumanPlayer::getInstance()->markNumber(name));
-        }
-        else {
-            // create new
-            createMarkItem();
-        }
-    }
-    else {
-        marks_key << name;
-        MarkItem *item = new MarkItem(name, HumanPlayer::getInstance()->markNumber(name));
-        item->setParent(this);
-        this->setParentItem(this);
-        this->setPos(this->boundingRect().width() - marks_key.length() * 40 - 10, 0);
-        marks_value << item;
-    }
+    createMarkItem();
 }
 
 void PlayerInfoContainer::setCurrent(bool current)
@@ -351,6 +341,7 @@ void PlayerInfoContainer::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void PlayerInfoContainer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    boundary->setColor("white");
     emit this->clicked(player);
 }
 

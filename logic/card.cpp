@@ -16,7 +16,7 @@ Card::Card(const QString &xn)
 
 Card::~Card()
 {
-    
+    delete item;
 }
 
 bool Card::isAvailable() const
@@ -182,6 +182,11 @@ bool Peach::filterTarget(AbstractPlayer * target) const
 void Peach::doEffect(AbstractPlayer * target)
 {
 	GameLogic::getInstance()->recover(HumanPlayer::getInstance(), 10);
+}
+
+bool Peach::isAvailable() const
+{
+    return HumanPlayer::getInstance()->maxHp() - HumanPlayer::getInstance()->hp() > 0 && Card::isAvailable();
 }
 
 Guisuo::Guisuo()
