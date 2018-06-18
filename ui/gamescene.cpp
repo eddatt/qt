@@ -173,6 +173,10 @@ void GameScene::selectReply(AbstractPlayer *player)
 void GameScene::onGameFinished(bool win)
 {
     is_prepared = false;
+    if (getCurrentLevel() == GameLogic::LEVEL_NUMBER) {
+        this->onWholeGameFinished();
+        return;
+    }
     this->win->setInfo(getCurrentLevel() + 1);
     this->lose->setInfo(getCurrentLevel() + 1);
     if (win)
@@ -485,4 +489,6 @@ void GameFinishPrompt::setText(const QString &text)
 {
     prompt->setText(QString(text));
     prompt->setPos((this->boundingRect().width() - prompt->boundingRect().width()) / 2, 15);
+
+    ok->setPos(this->boundingRect().width() / 2 - ok->boundingRect().width() / 2, this->boundingRect().height() - ok->boundingRect().height()/2 - 30);
 }
