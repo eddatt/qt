@@ -307,6 +307,52 @@ GameFinishPrompt::GameFinishPrompt(bool win)
         prompt->setText(QString("You Have Been DEFEAT, Good Luck!"));
     }
     prompt->setParentItem(this);
+    prompt->setPos((this->boundingRect().width() - prompt->boundingRect().width()) / 2, 15);
+    int currentY = prompt->boundingRect().height() + 15;
+    if (is_win) {
+        // create reward
+        int currentX = 20;
+        AvatarButton *p = new AvatarButton("power", "power");
+        p->setParent(this);
+        p->setParentItem(this);
+        p->setPos(currentX, currentY + 50);
+        QObject::connect(p, &AvatarButton::click, this,&GameFinishPrompt::dealOptionChosen);
+        options["power"] = p;
+        currentX += 200;
+
+        p = new AvatarButton("agility", "agility");
+        p->setParent(this);
+        p->setParentItem(this);
+        p->setPos(currentX, currentY + 50);
+        QObject::connect(p, &AvatarButton::click, this, &GameFinishPrompt::dealOptionChosen);
+        options["agility"] = p;
+        currentX += 200;
+
+        p = new AvatarButton("intelligence", "intelligence");
+        p->setParent(this);
+        p->setParentItem(this);
+        p->setPos(currentX, currentY + 50);
+        QObject::connect(p, &AvatarButton::click, this, &GameFinishPrompt::dealOptionChosen);
+        options["intelligence"] =  p;
+        currentX += 200;
+
+        p = new AvatarButton("max_hp", "max_hp");
+        p->setParent(this);
+        p->setParentItem(this);
+        p->setPos(currentX, currentY + 50);
+        QObject::connect(p, &AvatarButton::click, this, &GameFinishPrompt::dealOptionChosen);
+        options["max_hp"] =  p;
+        currentX += 200;
+
+        currentY += 250;
+    }
+    else {
+        currentY += 30;
+    }
+    ok = new Button("OK");
+    ok->setParent(this);
+    ok->setParentItem(this);
+    ok->setPos(this->boundingRect().width() / 2 - ok->boundingRect().width() / 2, currentY);
 }
 
 GameFinishPrompt::~GameFinishPrompt()
@@ -329,7 +375,7 @@ QRectF GameFinishPrompt::boundingRect() const
             5 * 150
         );
         width += 40;
-        h = prompt->boundingRect().height() + 150 + 50 * 2 + 60 + ok->boundingRect().height();
+        h = prompt->boundingRect().height() + 200 + 50 * 3 + 60 + ok->boundingRect().height();
     }   
     else {
         width = prompt->boundingRect().width() + 40;
@@ -341,4 +387,21 @@ QRectF GameFinishPrompt::boundingRect() const
 
 void GameFinishPrompt::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
+}
+
+void GameFinishPrompt::dealOptionChosen(QString chosen)
+{
+    if (chosen != this->current_option) {
+        if (!this->current_option.isEmpty())
+            options[this->current_option]->setSelected(false);
+        this->options[chosen]->setSelected(true);
+        this->current_option = chosen;
+        ok->setEnabled(true);
+    }
+    else {
+        if (!this->current_option.isEmpty())
+            options[this->current_option]->setSelected(false);
+        this->current_option = "";
+        ok->setEnabled(false);
+    }
 }

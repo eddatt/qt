@@ -138,8 +138,8 @@ public:
 	inline int drunk() const {
 		return m_drunk;
 	}
-	void setDrunk() {
-		this->m_drunk = 1;
+	void setDrunk(int n = 1) {
+		this->m_drunk = n;
 	}
     inline const QList<Item *> &items() {
         return m_items;

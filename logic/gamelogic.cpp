@@ -16,8 +16,10 @@ void GameLogic::start()
         // remove defense
         current_player->setCurrent(true);
         current_player->removeMark("@defense", current_player->markNumber("@defense"));
+
         if (current_player->inherits("HumanPlayer")) {
             HumanPlayer::getInstance()->setMagic(HumanPlayer::getInstance()->maxMagic());
+            HumanPlayer::getInstance()->setDrunk(0);
             HumanPlayer::getInstance()->drawCard(4);
             for (auto &p : alive_ais) {
                 showAIPurpose(p);
@@ -182,13 +184,12 @@ void GameLogic::useCardBy(AbstractPlayer *from, AbstractPlayer *to, Card *card)
     if (from->inherits("HumanPlayer")) {
         HumanPlayer::getInstance()->setMagic(HumanPlayer::getInstance()->magic() - card->energy());
     }
-    card->doEffect(from, to);
+    card->doEffect(to);
 }
 
 void GameLogic::showAIPurpose(AI *ai)
 {
     auto pur = ai->getCurrentOperation();
-    ai->setEnhanced(0);
     for (auto &op : pur.keys()) {
         ai->addMark(ai->operaion2String(op), pur[op]);
     }
@@ -204,7 +205,6 @@ void GameLogic::executeAIOpreation(AI *ai)
                 ai->removeMark(mark, ai->markNumber(mark));
             }
             else if (mark == "@enhance") {
-                ai->setEnhanced(ai->markNumber("@enhance"));
                 ai->removeMark(mark, ai->markNumber(mark));
             }
         }

@@ -10,6 +10,8 @@ class Skill;
 class GameScene;
 class Card;
 
+static QHash<QString, General> generals;
+
 struct General {
     QString name;
     //QList<Skill *> skills;
@@ -42,8 +44,6 @@ public:
 
     QList<AI *> aliveAIs() const;
     QList<AbstractPlayer *> alivePlayers() const;
-
-    static QHash<QString, General*> generals;
 
     void damage(AbstractPlayer *from, AbstractPlayer *to, int n = 1);
     void recover(AbstractPlayer *target, int n = 1);

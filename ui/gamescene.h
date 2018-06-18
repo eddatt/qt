@@ -69,11 +69,14 @@ public:
 
 signals:
     void reply(const QString &option);
+private slots:
+    void dealOptionChosen(QString chosen);
 private:
     bool is_win;
     int next_level;
+    QString current_option;
     QGraphicsSimpleTextItem *prompt;
-    QList<AvatarButton *> options;
+    QMap<QString,AvatarButton *> options;
     Button *ok;
 };
 

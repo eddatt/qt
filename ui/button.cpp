@@ -52,6 +52,12 @@ Button::Button(const QString &display_value, double w, double h)
 
     setAcceptHoverEvents(true);
     setAcceptedMouseButtons(Qt::LeftButton);
+    connect(this, &Button::enabledChanged, [this]() {
+        if (this->isEnabled())
+            this->setOpacity(1);
+        else
+            this->setOpacity(0.43);
+    });
 }
 
 Button::~Button()
