@@ -10,6 +10,8 @@ class AbstractPlayer;
 class InfoBanner;
 class DashBoard;
 class CardItem;
+class Button;
+class AvatarButton;
 
 class HpBar;
 class PlayerAvatarContainer;
@@ -52,6 +54,29 @@ private:
 
 };
 
+
+class GameFinishPrompt final : public QGraphicsObject
+{
+    Q_OBJECT
+public:
+    GameFinishPrompt(bool win);
+    ~GameFinishPrompt();
+
+    void setInfo(int next_level);
+
+    virtual QRectF boundingRect() const override;
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */) override;
+
+signals:
+    void reply(const QString &option);
+private:
+    bool is_win;
+    int next_level;
+    QGraphicsSimpleTextItem *prompt;
+    QList<AvatarButton *> options;
+    Button *ok;
+};
+
 class GameScene final : public QGraphicsScene
 {
     Q_OBJECT
@@ -76,11 +101,17 @@ public slots:
 
     void prepareFortargetSelect(bool is_select);
 
+    void onGameFinished();
+
 private:
     void createAIContainer();
     QList<PlayerInfoContainer *> ai_containers;
     InfoBanner* barner;
     DashBoard *dash_board;
+
+    bool is_prepared;
+
+    GameFinishPrompt *prompt;
 
     CardItem *current_judge_card;
 };

@@ -55,6 +55,7 @@ GameLogic * GameLogic::getInstance()
 
 GameLogic::~GameLogic()
 {
+
 }
 
 QStringList GameLogic::getAllGenerals() const
@@ -116,7 +117,12 @@ void GameLogic::damage(AbstractPlayer *from, AbstractPlayer *to, int n /*= 1*/)
 
 void GameLogic::recover(AbstractPlayer *target, int n /*= 1*/)
 {
-
+    sleep(500);
+    int loseHp = target->maxHp() - target->hp();
+    if (loseHp == 0)
+        return;
+    n = qMin<int>(n, loseHp);
+    target->setHp(target->hp() + n);
 }
 
 AbstractPlayer * GameLogic::getNextAlive(AbstractPlayer *target)
@@ -130,11 +136,31 @@ AbstractPlayer * GameLogic::getNextAlive(AbstractPlayer *target)
 void GameLogic::killPlayer(AbstractPlayer *player)
 {
     sleep(500);
-
+    player->setAlive(false);
+    alive_players.removeAll(player);
+    if (player->inherits("AI")) {
+        alive_ais.removeAll(qobject_cast<AI *>(player));
+    }
+    else {
+        // Human died
+        HumanPlayer::getInstance()->discardWholeHandcard();
+        sleep(1000);
+        emit gameFinished(false);
+    }
+    if (alive_ais.length() == 0) {
+        HumanPlayer::getInstance()->discardWholeHandcard();
+        sleep(500);
+        emit gameFinished(true);
+    }
 }
 
 void GameLogic::useCardBy(AbstractPlayer *from, AbstractPlayer *to, Card *card)
 {
+    sleep(500);
+    // remove Magic
+    if (from->inherits("HumanPlayer")) {
+        HumanPlayer::getInstance()->setMagic(HumanPlayer::getInstance()->magic() - card->energy());
+    }
     card->doEffect(from, to);
 }
 

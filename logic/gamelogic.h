@@ -68,6 +68,7 @@ public slots:
 
 signals:
     void gameReady() const;
+    void gameFinished(bool win);
 
 private:
     GameLogic(QObject *parent);

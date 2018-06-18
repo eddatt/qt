@@ -7,13 +7,14 @@
 #include "PlayerAvatarContainer.h"
 #include "carditem.h"
 #include "logic/card.h"
+#include "button.h"
 
 #include <QPixmap>
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
 
 GameScene::GameScene(QObject *parent)
-    :QGraphicsScene(parent)
+    :QGraphicsScene(parent), is_prepared(false)
 {
     setSceneRect(UIUtility::getGraphicsSceneRect());
     dash_board = new DashBoard;
@@ -72,18 +73,19 @@ _____________________________________________________________|____________|___|
 
 GameScene::~GameScene()
 {
-    
+       
 }
 
 int GameScene::getCurrentLevel()
 {
-
+    return GameLogic::getInstance()->currentLevel();
 }
 
 void GameScene::prepareGame()
 {
     barner->updateLevel(GameLogic::getInstance()->currentLevel());
     createAIContainer();
+    is_prepared = true;
 }
 
 void GameScene::createAIContainer()
@@ -111,7 +113,10 @@ void GameScene::createAIContainer()
 
 void GameScene::run()
 {
-        
+    if (is_prepared)
+    {
+
+    }
 }
 
 void GameScene::prepareFortargetSelect(bool is_select)
@@ -137,6 +142,11 @@ void GameScene::prepareFortargetSelect(bool is_select)
 void GameScene::selectReply(AbstractPlayer *player)
 {
     emit HumanPlayer::getInstance()->cardUsed(dash_board->currentSelectCard()->cardInfo(),player);
+}
+
+void GameScene::onGameFinished()
+{
+    is_prepared = false;
 }
 
 PlayerInfoContainer::PlayerInfoContainer(AbstractPlayer *p /*= nullptr*/)
@@ -282,4 +292,53 @@ void PlayerInfoContainer::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void PlayerInfoContainer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     emit this->clicked(player);
+}
+
+GameFinishPrompt::GameFinishPrompt(bool win)
+    :QGraphicsObject(nullptr),is_win(win)
+{
+    next_level = 0;
+    prompt = new QGraphicsSimpleTextItem(this);
+    prompt->setFont(UIUtility::getInfoBarnerFont());
+    if (is_win) {
+        prompt->setText(QString("The Next Level is %1, Please Choose Reward:").arg(QString::number(next_level)));
+    }
+    else {
+        prompt->setText(QString("You Have Been DEFEAT, Good Luck!"));
+    }
+    prompt->setParentItem(this);
+}
+
+GameFinishPrompt::~GameFinishPrompt()
+{
+    delete prompt;
+}
+
+void GameFinishPrompt::setInfo(int next_level)
+{
+    this->next_level = next_level;
+}
+
+QRectF GameFinishPrompt::boundingRect() const
+{
+    int width = 0, h = 0;
+    if (is_win) {
+        width = qMax<int>(
+            prompt->boundingRect().width()
+            ,
+            5 * 150
+        );
+        width += 40;
+        h = prompt->boundingRect().height() + 150 + 50 * 2 + 60 + ok->boundingRect().height();
+    }   
+    else {
+        width = prompt->boundingRect().width() + 40;
+        h = ok->boundingRect().height() + prompt->boundingRect().height() + 60;
+    }
+    return QRectF(0, 0, width, h);
+
+}
+
+void GameFinishPrompt::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
+{
 }
