@@ -2,8 +2,9 @@
 #include "ui/carditem.h"
 #include "player.h"
 #include "gamelogic.h"
+#include <random>
 
-
+std::random_device rd;
 
 
 Card::Card(const QString &xn)
@@ -48,6 +49,44 @@ bool Card::filterTarget(AbstractPlayer *target) const
 void Card::doEffect(AbstractPlayer *target)
 {
     return;
+}
+
+Card * Card::generateCard()
+{
+	int a = rd() % 10;
+	switch (a){
+	case 0:
+		return new Kill;
+		break;
+	case 1:
+		return new Jink;
+		break;
+	case 2:
+		return new Peach;
+		break;
+	case 3:
+		return new Wine;
+		break;
+	case 4:
+		return new Guisuo;
+		break;
+	case 5:
+		return new Shengnu;
+		break;
+	case 6:
+		return new Zhongji;
+		break;
+	case 7:
+		return new Songjian;
+		break;
+	case 8:
+		return new Maifu;
+		break;
+	case 9:
+		return new Xianji;
+		break;
+	}
+
 }
 
 int Card::energy() const

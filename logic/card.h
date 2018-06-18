@@ -18,6 +18,8 @@ public:
     virtual bool filterTarget(AbstractPlayer *target) const;
     virtual void doEffect(AbstractPlayer *target);
 
+	static Card* generateCard();
+
 	int energy() const;
 	void setEnergy(int e);
 
