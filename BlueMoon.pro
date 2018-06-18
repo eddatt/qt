@@ -5,9 +5,9 @@
 TEMPLATE = app
 TARGET = BlueMoon
 DESTDIR = ./x64/Debug
-QT += core network gui multimedia widgets
+QT += core gui multimedia widgets
 CONFIG += debug
-DEFINES += _UNICODE WIN64 QT_DLL QT_MULTIMEDIA_LIB QT_NETWORK_LIB QT_WIDGETS_LIB
+DEFINES += _UNICODE WIN64 QT_DLL QT_MULTIMEDIA_LIB QT_WIDGETS_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \
     ./GeneratedFiles/$(ConfigurationName) \
@@ -18,5 +18,34 @@ MOC_DIR += ./GeneratedFiles/$(ConfigurationName)
 OBJECTS_DIR += debug
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
-include(BlueMoon.pri)
 win32:RC_FILE = BlueMoon.rc
+HEADERS += ./logic/card.h \
+    ./logic/item.h \
+    ./logic/skill.h \
+    ./ui/uiutility.h \
+    ./logic/gamelogic.h \
+    ./logic/player.h \
+    ./bluemoon.h \
+    ./ui/startscene.h \
+    ./ui/button.h \
+    ./ui/infobarner.h \
+    ./ui/dash_board.h \
+    ./ui/PlayerAvatarContainer.h \
+    ./ui/carditem.h \
+    ./ui/gamescene.h
+SOURCES += ./bluemoon.cpp \
+    ./logic/card.cpp \
+    ./logic/item.cpp \
+    ./logic/gamelogic.cpp \
+    ./main.cpp \
+    ./logic/player.cpp \
+    ./logic/skill.cpp \
+    ./ui/carditem.cpp \
+    ./ui/dash_board.cpp \
+    ./ui/infobarner.cpp \
+    ./ui/PlayerAvatarContainer.cpp \
+    ./ui/uiutility.cpp \
+    ./ui/button.cpp \
+    ./ui/gamescene.cpp \
+    ./ui/startscene.cpp
+RESOURCES += BlueMoon.qrc
