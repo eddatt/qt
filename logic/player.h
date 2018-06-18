@@ -47,14 +47,18 @@ public:
     }
     void addMark(const QString &mark, int n = 1);
     void removeMark(const QString &mark, int n = 1);
+
+    void setCurrent(bool is_cur) {
+        is_current = is_cur;
+        currentChanged(is_cur);
+    }
 signals:
     void hpChanged();
     void maxHpChanged();
     void generalChanged();
     void aliveChanged(bool);
     void MarkChanged(QString);
-    void endRound();
-    void cardUsed(Card *card, AbstractPlayer *target);
+    void currentChanged(bool);
 protected:
     QString m_general;
     bool m_alive;
@@ -62,6 +66,7 @@ protected:
     int m_hp;
     QList<Skill *> skills;
     QHash<QString, int> marks;
+    bool is_current;
 };
 
 class AI : public AbstractPlayer
@@ -74,7 +79,7 @@ public:
         Attack, Defense, Enhance
     };
 
-    QMap<AI::Opreation,int> getCurrentOperation() const;
+    QMap<AI::Opreation,int> getCurrentOperation() const; 
 
     static QString operaion2String(AI::Opreation);
 
@@ -146,6 +151,9 @@ signals:
     void powerChanged();
     void agilityChanged();
     void intelligenceChanged();
+
+    void endRound();
+    void cardUsed(Card *card, AbstractPlayer *target);
 private:
     HumanPlayer();
     int m_magic;

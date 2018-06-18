@@ -64,6 +64,8 @@ public slots:
 
     void playerUseCard(Card *card, AbstractPlayer *to);
 
+    void sleep(int msec);
+
 signals:
     void gameReady() const;
 
@@ -78,7 +80,6 @@ private:
     bool is_run;
 
     QEventLoop event_loop;
-
     AbstractPlayer *current_player;
 
     GameScene *game_scene;

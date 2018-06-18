@@ -90,5 +90,7 @@ void HpBar::setHp(int hp, int max_hp)
 {
     this->current_hp = hp;
     this->max_hp = max_hp;
+    this->hp->setPlainText(QString("%1 / %2").arg(current_hp).arg(max_hp));
+    this->hp->setPos(w / 2 - this->hp->boundingRect().width() / 2, this->boundingRect().height() / 2 - this->hp->boundingRect().height() / 2);
     update(boundingRect());
 }

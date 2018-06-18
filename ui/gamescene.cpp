@@ -6,6 +6,7 @@
 #include "dash_board.h"
 #include "PlayerAvatarContainer.h"
 #include "carditem.h"
+#include "logic/card.h"
 
 #include <QPixmap>
 #include <QPainter>
@@ -118,6 +119,10 @@ void GameScene::prepareFortargetSelect(bool is_select)
     auto cm = qobject_cast<CardItemManager *>(sender());
     if (is_select) {
         current_judge_card = cm->currentSelected();
+        if (current_judge_card->cardInfo()->targetFix()) {
+            emit selectReply(HumanPlayer::getInstance());
+            return;
+        }
         for (auto &p : ai_containers)
             p->setTargetSelect(true);
     }
@@ -158,6 +163,8 @@ PlayerInfoContainer::PlayerInfoContainer(AbstractPlayer *p /*= nullptr*/)
     setAcceptedMouseButtons(Qt::NoButton);
 
     createMarkItem();
+
+    QObject::connect(p, &AbstractPlayer::currentChanged, this, &PlayerInfoContainer::setCurrent);
 
 }
 
@@ -252,6 +259,19 @@ void PlayerInfoContainer::setTargetSelect(bool is_select)
 {
     setAcceptHoverEvents(is_select);
     setAcceptedMouseButtons(is_select ? Qt::LeftButton : Qt::NoButton);
+    setOpacity(1);
+    if (!is_select) return;
+    Card *info = qobject_cast<GameScene *>(scene())->dashBoard()->currentSelectCard()->cardInfo();
+    if (info->filterTarget(player)) {
+        setAcceptHoverEvents(is_select);
+        setAcceptedMouseButtons(Qt::LeftButton);
+    }
+    else {
+        setOpacity(0.5);
+        setAcceptHoverEvents(false);
+        setAcceptedMouseButtons(Qt::NoButton);
+    }
+    
 }
 
 void PlayerInfoContainer::mousePressEvent(QGraphicsSceneMouseEvent *event)

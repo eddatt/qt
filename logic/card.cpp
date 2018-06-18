@@ -15,8 +15,9 @@ Card::~Card()
     
 }
 
-bool Card::isAvailable(AbstractPlayer *player) const
+bool Card::isAvailable() const
 {
+    //HumanPlayer::getInstance();
     return false;
 }
 
@@ -29,6 +30,16 @@ CardItem * Card::cardItem() const
 QString Card::name() const
 {
     return m_name;
+}
+
+bool Card::targetFix() const
+{
+    return false;
+}
+
+bool Card::filterTarget(AbstractPlayer *target) const
+{
+    return false;
 }
 
 void Card::doEffect(AbstractPlayer *self, AbstractPlayer *target)

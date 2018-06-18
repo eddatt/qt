@@ -4,6 +4,7 @@
 #include "PlayerAvatarContainer.h"
 #include "carditem.h"
 #include "logic/card.h"
+#include "gamescene.h"
 
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
@@ -134,7 +135,11 @@ void DashBoard::removeCardItem(CardItem *re)
 
 void DashBoard::setCurrent(bool current)
 {
-
+    qobject_cast<GameScene *>(scene())->prepareFortargetSelect(false);
+    if (current != true)
+        card_manager->unselectCard();
+    magic_item->setEnabled(current);
+    card_manager->setEnabled(current);
 }
 
 QRectF MarkItem::boundingRect() const
@@ -250,7 +255,7 @@ void CardItemManager::updateCardItemLayout()
     QObject::connect(tl, &QTimeLine::finished, tl, &QTimeLine::deleteLater);
     for (auto &c : card_items) {
         c->animateMoveTo(from_x, c->y(), 200, tl);
-        c->setEnabled(true);
+        c->setAvailable(c->cardInfo()->isAvailable());
         from_x += 93;
     }
     tl->start();
@@ -353,7 +358,7 @@ void CardItemManager::selectCard(CardItem *item)
     emit selectChanged(true);
     for (auto &c : card_items) {
         if (c == item) continue;
-        //c->setEnabled(false);
+        c->setOpacity(0.8);
     }
 }
 
@@ -374,7 +379,5 @@ void CardItemManager::unselectCard()
         emit selectChanged(false);
     }
     current_activate = nullptr;
-    for (auto &c : card_items) {
-        //c->setEnabled(true);
-    }
+    updateCardItemLayout();
 }

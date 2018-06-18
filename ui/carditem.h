@@ -27,6 +27,12 @@ public:
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
+    inline bool isAvailable() const {
+        return available;
+    }
+
+    void setAvailable(bool ava);
+
     Card *cardInfo() const {
         return card;
     }
@@ -45,6 +51,7 @@ private:
     bool deleting;
     bool is_pop;
     bool in_animation;
+    bool available;
     QGraphicsDropShadowEffect *boundary;
     QString name;
     Card *card;

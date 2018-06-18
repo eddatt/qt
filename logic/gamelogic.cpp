@@ -3,6 +3,8 @@
 #include "player.h"
 #include "card.h"
 
+#include <QTimer>
+
 void GameLogic::start()
 {
     if (game_scene == nullptr)
@@ -11,14 +13,29 @@ void GameLogic::start()
         current_player = HumanPlayer::getInstance();
     while (this->alive_ais.length() > 0 && HumanPlayer::getInstance()->alive()) {
         // start round
+        // remove defense
+        current_player->setCurrent(true);
+        current_player->removeMark("@defense", current_player->markNumber("@defense"));
         if (current_player->inherits("HumanPlayer")) {
+            HumanPlayer::getInstance()->setMagic(HumanPlayer::getInstance()->maxMagic());
             HumanPlayer::getInstance()->drawCard(4);
             for (auto &p : alive_ais) {
-                
+                showAIPurpose(p);
             }
             this->event_loop.exec();
-
+            sleep(500);
+            HumanPlayer::getInstance()->discardWholeHandcard();
         }
+        else {
+            // AI
+            
+            AI *ai = qobject_cast<AI *>(current_player);
+            executeAIOpreation(ai);
+            removeAIPurpose(ai);
+        }
+        current_player->setCurrent(false);
+        current_player = getNextAlive(current_player);
+        sleep(500);
     }
 }
 
@@ -27,6 +44,7 @@ GameLogic::GameLogic(QObject *parent)
 {
     QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::endRound, &event_loop, &QEventLoop::quit);
     QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::cardUsed, this, &GameLogic::playerUseCard);
+
 }
 
 GameLogic * GameLogic::getInstance()
@@ -79,7 +97,21 @@ QList<AbstractPlayer *> GameLogic::alivePlayers() const
 
 void GameLogic::damage(AbstractPlayer *from, AbstractPlayer *to, int n /*= 1*/)
 {
-
+    sleep(500);
+    //deal defense
+    if (to->markNumber("@defense") >= n) {
+        sleep(300);
+        to->removeMark("@defense", n);
+        return;
+    }
+    n -= to->markNumber("@defense");
+    to->removeMark("@defense", to->markNumber("@defense"));
+    int new_hp = qMax<int>(to->hp() - n,0);
+    to->setHp(new_hp);
+    if (new_hp == 0) {
+        sleep(1000);
+        killPlayer(to);
+    }
 }
 
 void GameLogic::recover(AbstractPlayer *target, int n /*= 1*/)
@@ -97,17 +129,19 @@ AbstractPlayer * GameLogic::getNextAlive(AbstractPlayer *target)
 
 void GameLogic::killPlayer(AbstractPlayer *player)
 {
+    sleep(500);
 
 }
 
 void GameLogic::useCardBy(AbstractPlayer *from, AbstractPlayer *to, Card *card)
 {
-
+    card->doEffect(from, to);
 }
 
 void GameLogic::showAIPurpose(AI *ai)
 {
     auto pur = ai->getCurrentOperation();
+    ai->setEnhanced(0);
     for (auto &op : pur.keys()) {
         ai->addMark(ai->operaion2String(op), pur[op]);
     }
@@ -119,18 +153,33 @@ void GameLogic::executeAIOpreation(AI *ai)
         if (mark.startsWith("@")) {
             if (mark == "@attack") {
                 damage(ai, HumanPlayer::getInstance(), ai->markNumber(mark));
+                sleep(500);
                 ai->removeMark(mark, ai->markNumber(mark));
-            }   
+            }
+            else if (mark == "@enhance") {
+                ai->setEnhanced(ai->markNumber("@enhance"));
+                ai->removeMark(mark, ai->markNumber(mark));
+            }
         }
     }
 }
 
 void GameLogic::removeAIPurpose(AI *ai)
 {
-
+    for (auto &mark : ai->getMarks()) {
+        if (mark.startsWith("@")) {
+            ai->removeMark(mark, ai->markNumber(mark));
+        }
+    }
 }
 
 void GameLogic::playerUseCard(Card *card, AbstractPlayer *to)
 {
     useCardBy(HumanPlayer::getInstance(), to, card);
+}
+
+void GameLogic::sleep(int msec)
+{
+    QTimer::singleShot(msec, &event_loop, &QEventLoop::quit);
+    event_loop.exec();
 }

@@ -9,10 +9,13 @@ public:
     Card(const QString &name);
     virtual ~Card();
 
-    virtual bool isAvailable(AbstractPlayer *player) const;
+    virtual bool isAvailable() const;
 
     CardItem *cardItem() const;
     QString name() const;
+
+    virtual bool targetFix() const;
+    virtual bool filterTarget(AbstractPlayer *target) const;
 
     virtual void doEffect(AbstractPlayer *self, AbstractPlayer *target);
 

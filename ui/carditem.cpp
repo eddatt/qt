@@ -8,7 +8,7 @@
 #include <QGraphicsDropShadowEffect>
 
 CardItem::CardItem(Card *c)
-    :card(c), is_pop(false), in_animation(false), deleting(false)
+    :card(c), is_pop(false), in_animation(false), deleting(false), available(false)
 {
     name = c->name();
     QObject::connect(this, &QGraphicsObject::enabledChanged, [this]() {
@@ -46,7 +46,7 @@ void CardItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void CardItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(!in_animation && !deleting)
+    if(!in_animation && !deleting && isAvailable())
         emit clicked();
 }
 
@@ -62,6 +62,19 @@ void CardItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     setZValue(3);
     if (is_pop) return;
     boundary->setEnabled(false);
+}
+
+void CardItem::setAvailable(bool ava)
+{
+    available = ava;
+    if (ava) {
+        setAcceptedMouseButtons(Qt::LeftButton);
+        setOpacity(1);
+    }
+    else {
+        setAcceptedMouseButtons(Qt::NoButton);
+        setOpacity(0.3);
+    }
 }
 
 QTimeLine * CardItem::animateMoveTo(qreal x, qreal y, int duration, QTimeLine *out)

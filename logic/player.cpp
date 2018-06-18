@@ -8,6 +8,7 @@
 AbstractPlayer::AbstractPlayer()
     :m_general("ZhaZhaHui"), m_max_hp(100), m_hp(m_max_hp)
 {
+
 }
 
 
