@@ -172,6 +172,8 @@ void GameScene::selectReply(AbstractPlayer *player)
 void GameScene::onGameFinished(bool win)
 {
     is_prepared = false;
+    this->win->setInfo(getCurrentLevel() + 1);
+    this->lose->setInfo(getCurrentLevel() + 1);
     if (win)
         this->win->show();
     else
@@ -427,7 +429,14 @@ GameFinishPrompt::~GameFinishPrompt()
 void GameFinishPrompt::setInfo(int next_level)
 {
     this->next_level = next_level;
+    if (is_win) {
+        prompt->setText(QString("The Next Level is %1, Please Choose Reward:").arg(QString::number(next_level)));
+    }
+    else {
+        prompt->setText(QString("You Have Been DEFEAT, Good Luck!"));
+    }
     prompt->setPos((this->boundingRect().width() - prompt->boundingRect().width()) / 2, 15);
+    
 }
 
 QRectF GameFinishPrompt::boundingRect() const
