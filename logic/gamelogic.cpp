@@ -24,6 +24,7 @@ void GameLogic::startGame()
 
 void GameLogic::newRound()
 {
+    if (!is_run) return;
     HumanPlayer::getInstance()->discardWholeHandcard();
     HumanPlayer::getInstance()->setDrunk(0);
     HumanPlayer::getInstance()->setCurrent(false);
@@ -221,10 +222,12 @@ void GameLogic::killPlayer(AbstractPlayer *player)
     else {
         // Human died
         HumanPlayer::getInstance()->discardWholeHandcard();
+        is_run = false;
         emit gameFinished(false);
     }
     if (alive_ais.length() == 0) {
         HumanPlayer::getInstance()->discardWholeHandcard();
+        is_run = false;
         emit gameFinished(true);
     }
 }
