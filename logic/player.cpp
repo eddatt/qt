@@ -73,18 +73,17 @@ void HumanPlayer::setGeneral(const QString & name)
 
 void HumanPlayer::drawCard(int n)
 {
-    for (int i = 0; i < n; ++i) {
-    }
+    GameLogic::getInstance()->drawCard(n);
 }
 
 void HumanPlayer::discardWholeHandcard()
 {
-
+    GameLogic::getInstance()->discardAllCard();
 }
 
 void HumanPlayer::discardOneCard(Card *card)
 {
-
+    GameLogic::getInstance()->discard(card);
 }
 
 HumanPlayer::HumanPlayer()

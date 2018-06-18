@@ -56,6 +56,10 @@ public:
     void executeAIOpreation(AI *ai);
     void removeAIPurpose(AI *ai);
 
+    void drawCard(int n = 1);
+    void discard(Card *card);
+    void discardAllCard();
+
     const static int LEVEL_NUMBER = 5;
 	static QHash<QString, General> generals;
 

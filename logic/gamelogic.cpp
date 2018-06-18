@@ -255,6 +255,22 @@ void GameLogic::removeAIPurpose(AI *ai)
     }
 }
 
+void GameLogic::drawCard(int n)
+{
+    for (int i = 0; i < n ++i) {
+
+    }
+}
+
+void GameLogic::discard(Card * card)
+{
+    
+}
+
+void GameLogic::discardAllCard()
+{
+}
+
 void GameLogic::playerUseCard(Card *card, AbstractPlayer *to)
 {
     useCardBy(HumanPlayer::getInstance(), to, card);
