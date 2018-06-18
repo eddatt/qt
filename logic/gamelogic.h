@@ -3,8 +3,12 @@
 #include <QObject>
 #include <QHash>
 #include <QString>
+#include <QMap>
+#include <QEventLoop>
 
 class Skill;
+class GameScene;
+class Card;
 
 struct General {
     QString name;
@@ -28,6 +32,8 @@ public:
 
     QStringList getAllGenerals() const;
 
+    void setGameScene(GameScene *scene);
+
     void prepareGameScene(int level, const QStringList &ai_info);
 
     inline int currentLevel() const {
@@ -38,6 +44,25 @@ public:
     QList<AbstractPlayer *> alivePlayers() const;
 
     static QHash<QString, General*> generals;
+
+    void damage(AbstractPlayer *from, AbstractPlayer *to, int n = 1);
+    void recover(AbstractPlayer *target, int n = 1);
+
+    AbstractPlayer *getNextAlive(AbstractPlayer *target);
+
+    void killPlayer(AbstractPlayer *player);
+
+    void useCardBy(AbstractPlayer *from, AbstractPlayer *to, Card *card);
+
+    void showAIPurpose(AI *ai);
+    void executeAIOpreation(AI *ai);
+    void removeAIPurpose(AI *ai);
+
+
+public slots:
+    void start();
+
+    void playerUseCard(Card *card, AbstractPlayer *to);
 
 signals:
     void gameReady() const;
@@ -51,4 +76,10 @@ private:
     QMap<int, QStringList> level_info;
 
     bool is_run;
+
+    QEventLoop event_loop;
+
+    AbstractPlayer *current_player;
+
+    GameScene *game_scene;
 };

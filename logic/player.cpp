@@ -1,6 +1,7 @@
 #include "player.h"
 #include "item.h"
 #include "card.h"
+#include <QMap>
 
 
 
@@ -48,6 +49,21 @@ HumanPlayer::~HumanPlayer()
 
 }
 
+void HumanPlayer::drawCard(int n)
+{
+
+}
+
+void HumanPlayer::discardWholeHandcard()
+{
+
+}
+
+void HumanPlayer::discardOneCard(Card *card)
+{
+
+}
+
 HumanPlayer::HumanPlayer()
     :m_magic(2),m_max_magic(2),m_power(0),m_agility(0),m_intelligence(0)
 {
@@ -62,4 +78,34 @@ AI::AI()
 AI::~AI()
 {
 
+}
+
+QMap<AI::Opreation, int> AI::getCurrentOperation() const
+{
+    return QMap<AI::Opreation, int>();
+}
+
+QString AI::operaion2String(Opreation o)
+{
+    switch (o) {
+    case Opreation::Attack: 
+        return "@attack";
+    
+    case Opreation::Defense :
+        return "@defense";
+    
+    case Opreation::Enhance :
+        return "@enhance";
+    }
+    return "";
+}
+
+void AI::setEnhanced(int power)
+{
+    this->enhanced_point = power;
+}
+
+int AI::enhancedPoint() const
+{
+    return enhanced_point;
 }

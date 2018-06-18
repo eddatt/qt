@@ -53,6 +53,8 @@ signals:
     void generalChanged();
     void aliveChanged(bool);
     void MarkChanged(QString);
+    void endRound();
+    void cardUsed(Card *card, AbstractPlayer *target);
 protected:
     QString m_general;
     bool m_alive;
@@ -68,7 +70,19 @@ class AI : public AbstractPlayer
 public:
     AI();
     virtual ~AI();
+    enum class Opreation {
+        Attack, Defense, Enhance
+    };
 
+    QMap<AI::Opreation,int> getCurrentOperation() const;
+
+    static QString operaion2String(AI::Opreation);
+
+    void setEnhanced(int power);
+    inline int enhancedPoint() const;
+
+private:
+    int enhanced_point;
 };
 
 class HumanPlayer : public AbstractPlayer

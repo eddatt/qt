@@ -5,6 +5,7 @@
 #include "infobarner.h"
 #include "dash_board.h"
 #include "PlayerAvatarContainer.h"
+#include "carditem.h"
 
 #include <QPixmap>
 #include <QPainter>
@@ -29,6 +30,7 @@ GameScene::GameScene(QObject *parent)
     barner->show();
     this->setBackgroundBrush(QPixmap(UIUtility::getBackgroundPath("on_game")));
 
+    GameLogic::getInstance()->setGameScene(this);
     QObject::connect(GameLogic::getInstance(), &GameLogic::gameReady, this, &GameScene::prepareGame);
 }
 
@@ -125,6 +127,11 @@ void GameScene::prepareFortargetSelect(bool is_select)
             p->setTargetSelect(false);
     }
 
+}
+
+void GameScene::selectReply(AbstractPlayer *player)
+{
+    emit HumanPlayer::getInstance()->cardUsed(dash_board->currentSelectCard()->cardInfo(),player);
 }
 
 PlayerInfoContainer::PlayerInfoContainer(AbstractPlayer *p /*= nullptr*/)

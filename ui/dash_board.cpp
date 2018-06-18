@@ -49,6 +49,7 @@ DashBoard::DashBoard()
     magic_item->setPos(UIUtility::getGraphicsSceneRect().width() - (250 - magic_item->boundingRect().width() / 2), 
         127 - magic_item->boundingRect().height() / 2 - 10);
 
+    QObject::connect(magic_item, &MagicIndexItem::clicked, HumanPlayer::getInstance(), &HumanPlayer::endRound);
     QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::magicChanged, magic_item,&MagicIndexItem::updateMagic);
     QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::maxMagicChanged, magic_item, &MagicIndexItem::updateMagic);
     bar = new HpBar(this->sceneBoundingRect().width(),HumanPlayer::getInstance()->maxHp(),HumanPlayer::getInstance()->hp());

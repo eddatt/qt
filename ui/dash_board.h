@@ -103,7 +103,7 @@ public:
     }
     
 public slots:
-    void updateMark(const QString &markk);
+    void updateMark(const QString &mark);
     void setCurrent(bool current);
 private:
     QStringList marks_key;

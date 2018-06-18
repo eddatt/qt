@@ -105,6 +105,7 @@ void InfoBanner::initializerItems()
 void InfoBanner::updateLevel(int level)
 {
     this->level->setText(QString("Level %1").arg(level));
+    updateLayout(); 
 }
 
 void InfoBanner::updateProperty()
@@ -112,16 +113,30 @@ void InfoBanner::updateProperty()
     player_property->setHtml(QString("<font color = \"red\">%1</font> / <font color = \"green\">%2</font> / <font color = \"blue\">%3</font>").arg(
         QString::number(HumanPlayer::getInstance()->power()), QString::number(HumanPlayer::getInstance()->agility()), QString::number(HumanPlayer::getInstance()->intelligence())
     ));
+    updateLayout();
 }
 
 void InfoBanner::updateHp()
 {
     Hp->setText(QString("%1 / %1").arg(HumanPlayer::getInstance()->hp()).arg(HumanPlayer::getInstance()->maxHp()));
+    updateLayout();
 }
 
 void InfoBanner::updateGeneral()
 {
     general_name->setText(HumanPlayer::getInstance()->general());
+    updateLayout();
+}
+
+void InfoBanner::updateLayout()
+{
+    general_name->setPos(50, INFO_HEIGHT / 2 - general_name->boundingRect().height() / 2);
+    double currentX = 50 + general_name->boundingRect().width() + 50;
+    Hp->setPos(currentX, INFO_HEIGHT / 2 - Hp->boundingRect().height() / 2);
+    currentX += Hp->boundingRect().width() + 100;
+    player_property->setPos(currentX, INFO_HEIGHT / 2 - player_property->boundingRect().height() / 2);
+    currentX += player_property->boundingRect().width() + 100;
+    level->setPos(currentX, INFO_HEIGHT / 2 - level->boundingRect().height() / 2);
 }
 
 ItemIcon::ItemIcon(const QString &name)

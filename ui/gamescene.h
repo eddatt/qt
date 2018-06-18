@@ -62,10 +62,15 @@ public:
 
     inline int getCurrentLevel();
 
+    DashBoard *dashBoard() const {
+        return dash_board;
+    }
+
 signals:
-    void selectReply(AbstractPlayer *player);
+    void endRount();
 
 public slots:
+    void selectReply(AbstractPlayer *player);
     void prepareGame();
     void run();
 
@@ -79,3 +84,4 @@ private:
 
     CardItem *current_judge_card;
 };
+                          
