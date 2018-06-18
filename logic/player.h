@@ -73,21 +73,22 @@ class AI : public AbstractPlayer
 {
     Q_OBJECT
 public:
-    AI();
+    AI(int i);
     virtual ~AI();
-    enum class Opreation {
-        Attack, Defense, Enhance
+    enum class Operation {
+        Attack, Defense
     };
 
-    QMap<AI::Opreation,int> getCurrentOperation() const; 
+    QMap<AI::Operation,int> getCurrentOperation() const;
 
-    static QString operaion2String(AI::Opreation);
+    static QString operaion2String(AI::Operation);
 
-    void setEnhanced(int power);
-    inline int enhancedPoint() const;
 
 private:
     int enhanced_point;
+	QString m_name;
+	QList<int> attacks;
+	QList<int> defends;
 };
 
 class HumanPlayer : public AbstractPlayer
@@ -134,6 +135,12 @@ public:
         this->m_intelligence = intel;
         intelligenceChanged();
     }
+	inline int drunk() const {
+		return m_drunk;
+	}
+	void setDrunk() {
+		this->m_drunk = 1;
+	}
     inline const QList<Item *> &items() {
         return m_items;
     };
@@ -162,6 +169,7 @@ private:
     int m_power;
     int m_agility;
     int m_intelligence;
+	int m_drunk = 0;
 
     QList<Item *> m_items;
 

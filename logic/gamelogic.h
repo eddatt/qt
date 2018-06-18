@@ -34,7 +34,7 @@ public:
 
     void setGameScene(GameScene *scene);
 
-    void prepareGameScene(int level, const QStringList &ai_info);
+    void prepareGameScene(int level);
 
     inline int currentLevel() const {
         return current_level;
