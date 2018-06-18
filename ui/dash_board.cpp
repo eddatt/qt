@@ -133,6 +133,16 @@ void DashBoard::removeCardItem(CardItem *re)
     this->card_manager->removeCardItem(re);
 }
 
+void DashBoard::addCardItems(const QList<CardItem*>& items)
+{
+    this->card_manager->addCardItems(items);
+}
+
+void DashBoard::removeAllCardItem()
+{
+    this->card_manager->removeAllCardItem();
+}
+
 void DashBoard::setCurrent(bool current)
 {
     qobject_cast<GameScene *>(scene())->prepareFortargetSelect(false);

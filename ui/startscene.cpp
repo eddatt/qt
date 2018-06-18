@@ -111,7 +111,7 @@ void StartScene::createCooseGeneralPannel()
 void StartScene::onGeneralConfirmed(const QString &general)
 {
     HumanPlayer::getInstance()->setGeneral(general);
-    BlueMoon::getInstance()->loadScene(new GameScene(BlueMoon::getInstance()));   
+    BlueMoon::getInstance()->loadScene(new GameScene(nullptr));   
 }
 
 Logo::Logo()

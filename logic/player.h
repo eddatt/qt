@@ -156,6 +156,13 @@ public:
         return m_cards;
     }
 
+    void addCard(Card *c) {
+        m_cards << c;
+    }
+    void removeCard(Card *c) {
+        m_cards.removeAll(c);
+    }
+
     void drawCard(int n);
     void discardWholeHandcard();
     void discardOneCard(Card *card);

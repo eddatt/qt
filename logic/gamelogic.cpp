@@ -2,6 +2,8 @@
 #include "bluemoon.h"
 #include "player.h"
 #include "card.h"
+#include "ui/dash_board.h"
+#include "ui/gamescene.h"
 
 #include <QTimer>
 
@@ -63,9 +65,9 @@ GameLogic::GameLogic(QObject *parent)
 	c.agility_plus = 0;
 	c.intelligence_plus = 1;
 
-	generals["ZhaZhaHui"] = a;
-	generals["GuTianLe"] = b;
-	generals["ChenXiaoChun"] = c;
+	this->generals["ZhaZhaHui"] = a;
+    this->generals["GuTianLe"] = b;
+    this->generals["ChenXiaoChun"] = c;
 
 
     QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::endRound, &event_loop, &QEventLoop::quit);
@@ -189,6 +191,7 @@ AbstractPlayer * GameLogic::getNextAlive(AbstractPlayer *target)
     if (idx != -1) {
         return alive_players.at((idx + 1) % alive_players.length());
     }
+    return nullptr;
 }
 
 void GameLogic::killPlayer(AbstractPlayer *player)
@@ -257,18 +260,39 @@ void GameLogic::removeAIPurpose(AI *ai)
 
 void GameLogic::drawCard(int n)
 {
-    for (int i = 0; i < n ++i) {
-
+    QList<CardItem *> items;
+    for (int i = 0; i < n; ++i) {
+        auto c = Card::generateCard();
+        items << c->cardItem();
+        HumanPlayer::getInstance()->addCard(c);
     }
+    game_scene->dashBoard()->addCardItems(items);
 }
 
 void GameLogic::discard(Card * card)
 {
-    
+    HumanPlayer::getInstance()->removeCard(card);
+    game_scene->dashBoard()->removeCardItem(card->cardItem());
+    delete card;
 }
 
 void GameLogic::discardAllCard()
 {
+    for (auto &c : HumanPlayer::getInstance()->cards()) {
+        HumanPlayer::getInstance()->removeCard(c);
+        delete c;
+    }
+    game_scene->dashBoard()->removeAllCardItem();
+}
+
+void GameLogic::addGeneral(const QString & name, General general)
+{
+    generals[name] = general;
+}
+
+General GameLogic::generalInfo(const QString & name)
+{
+    return generals[name];
 }
 
 void GameLogic::playerUseCard(Card *card, AbstractPlayer *to)

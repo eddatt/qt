@@ -86,6 +86,7 @@ Card * Card::generateCard()
 		return new Xianji;
 		break;
 	}
+    return nullptr;
 
 }
 

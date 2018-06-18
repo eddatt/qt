@@ -2,10 +2,11 @@
 #include "item.h"
 #include "card.h"
 #include "gamelogic.h"
+
 #include <QMap>
 #include <random>
 
-std::random_device rd;
+extern std::random_device rd;
 
 int pow(int i, double x, int ori) {
 	double re = 1.0;
@@ -31,8 +32,8 @@ void AbstractPlayer::setGeneral(const QString &general)
 {
     this->m_general = general;
     generalChanged();
-	setMaxHp(GameLogic::generals[general].max_hp);
-	setHp(GameLogic::generals[general].max_hp);
+	setMaxHp(GameLogic::getInstance()->generalInfo(general).max_hp);
+	setHp(GameLogic::getInstance()->generalInfo(general).max_hp);
     //setMaxHp()
 }
 
@@ -65,9 +66,9 @@ HumanPlayer::~HumanPlayer()
 void HumanPlayer::setGeneral(const QString & name)
 {
 
-	HumanPlayer::setAgility(GameLogic::generals[name].agility_plus);
-	HumanPlayer::setPower(GameLogic::generals[name].pwr_plus);
-	HumanPlayer::setIntelligence(GameLogic::generals[name].intelligence_plus);
+	HumanPlayer::setAgility(GameLogic::getInstance()->generalInfo(name).agility_plus);
+	HumanPlayer::setPower(GameLogic::getInstance()->generalInfo(name).pwr_plus);
+	HumanPlayer::setIntelligence(GameLogic::getInstance()->generalInfo(name).intelligence_plus);
 	AbstractPlayer::setGeneral(name);
 }
 
@@ -287,12 +288,11 @@ QMap<AI::Operation, int> AI::getCurrentOperation() const
 QString AI::operaion2String(Operation o)
 {
     switch (o) {
-    case Operation::Attack: 
+    case Operation::Attack:
         return "@attack";
-    
-    case Operation::Defense :
-        return "@defense";
-
+    case Operation::Defense:
+        return "@defense";  
+    }
     return "";
 }
 

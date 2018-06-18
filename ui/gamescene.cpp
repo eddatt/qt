@@ -19,6 +19,8 @@ GameScene::GameScene(QObject *parent)
     :QGraphicsScene(parent), is_prepared(false)
 {
     setSceneRect(UIUtility::getGraphicsSceneRect());
+    this->setBackgroundBrush(QPixmap(UIUtility::getBackgroundPath("on_game")));
+    
     dash_board = new DashBoard;
     dash_board->setParent(this);
     this->addItem(dash_board);
@@ -26,17 +28,16 @@ GameScene::GameScene(QObject *parent)
     dash_board->show();
 
     QObject::connect(dash_board->cardItemManager(), &CardItemManager::selectChanged,this,&GameScene::prepareFortargetSelect);
-
     barner = new InfoBanner;
     barner->setParent(this);
     this->addItem(barner);
     barner->setPos(0, 0);
     barner->show();
-    this->setBackgroundBrush(QPixmap(UIUtility::getBackgroundPath("on_game")));
 
     GameLogic::getInstance()->setGameScene(this);
     QObject::connect(GameLogic::getInstance(), &GameLogic::gameReady, this, &GameScene::prepareGame);
     QObject::connect(GameLogic::getInstance(), &GameLogic::gameFinished, this, &GameScene::onGameFinished);
+
 
     win = new GameFinishPrompt(true);
     lose = new GameFinishPrompt(false);
@@ -48,7 +49,8 @@ GameScene::GameScene(QObject *parent)
     this->addItem(lose);
 
     win->hide();
-    //lose->hide();
+    lose->hide();
+    
 }
 
 
@@ -341,6 +343,7 @@ GameFinishPrompt::GameFinishPrompt(bool win)
 {
     next_level = 0;
     prompt = new QGraphicsSimpleTextItem(this);
+    ok = new Button("OK");
     prompt->setFont(UIUtility::getInfoBarnerFont());
     if (is_win) {
         prompt->setText(QString("The Next Level is %1, Please Choose Reward:").arg(QString::number(next_level)));
@@ -385,13 +388,12 @@ GameFinishPrompt::GameFinishPrompt(bool win)
         QObject::connect(p, &AvatarButton::click, this, &GameFinishPrompt::dealOptionChosen);
         options["max_hp"] =  p;
         currentX += 200;
-
         currentY += 250;
     }
     else {
         currentY += 30;
     }
-    ok = new Button("OK");
+    
     ok->setParent(this);
     ok->setParentItem(this);
     ok->setPos(this->boundingRect().width() / 2 - ok->boundingRect().width() / 2, currentY);

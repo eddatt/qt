@@ -60,8 +60,10 @@ public:
     void discard(Card *card);
     void discardAllCard();
 
+    void addGeneral(const QString &name, General general);
+    General generalInfo(const QString &name);
+
     const static int LEVEL_NUMBER = 5;
-	static QHash<QString, General> generals;
 
 
 public slots:
@@ -90,4 +92,6 @@ private:
     AbstractPlayer *current_player;
 
     GameScene *game_scene;
+
+    QMap<QString, General> generals;
 };

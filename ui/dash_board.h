@@ -93,6 +93,8 @@ public:
 
     void addCardItem(CardItem *add);
     void removeCardItem(CardItem *re);
+    void addCardItems(const QList<CardItem *> &items);
+    void removeAllCardItem();
 
     CardItemManager *cardItemManager() const {
         return card_manager;
