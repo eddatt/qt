@@ -21,6 +21,10 @@ public:
 
     ~CardItem();
 
+    bool isPopUp() const {
+        return is_pop;
+    }
+
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
