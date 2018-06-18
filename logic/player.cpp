@@ -40,6 +40,7 @@ void AbstractPlayer::setGeneral(const QString &general)
 void AbstractPlayer::addMark(const QString &mark, int n /*= 1*/)
 {
     marks[mark] += n;
+    MarkChanged(mark);
 }
 
 void AbstractPlayer::removeMark(const QString &mark, int n /*= 1*/)
@@ -50,6 +51,7 @@ void AbstractPlayer::removeMark(const QString &mark, int n /*= 1*/)
     else {
         marks[mark] -= n;
     }
+    MarkChanged(mark);
 }
 
 HumanPlayer * HumanPlayer::getInstance()
@@ -70,6 +72,7 @@ void HumanPlayer::setGeneral(const QString & name)
 	HumanPlayer::setPower(GameLogic::getInstance()->generalInfo(name).pwr_plus);
 	HumanPlayer::setIntelligence(GameLogic::getInstance()->generalInfo(name).intelligence_plus);
 	AbstractPlayer::setGeneral(name);
+    this->setAlive(true);
 }
 
 void HumanPlayer::drawCard(int n)
@@ -96,7 +99,7 @@ HumanPlayer::HumanPlayer()
 AI::AI(int i)
 {
 	if (i == 0) {
-		m_name = "Monster1";
+		m_name = "m1";
 		m_hp = 60;
 		m_max_hp = 60;
 		for (int j = 0; j < 100; j++) {
@@ -106,7 +109,7 @@ AI::AI(int i)
 		}
 	}
 	else if (i == 1) {
-		m_name = "Monster2";
+		m_name = "m2";
 		m_hp = 40;
 		m_max_hp = 40;
 		attacks.push_back(4 + rd() % 2);
@@ -140,7 +143,7 @@ AI::AI(int i)
 		}
 	}
 	else if (i == 2) {
-		m_name = "Monster3";
+		m_name = "m3";
 		m_hp = 50;
 		m_max_hp = 50;
 		attacks.push_back(6 + rd() % 2);
@@ -174,7 +177,7 @@ AI::AI(int i)
 		}
 	}
 	else if (i == 3) {
-		m_name = "Monster4";
+		m_name = "m4";
 		m_hp = 10;
 		m_max_hp = 10;
 		for (int j = 0; j < 100; j++) {
@@ -190,7 +193,7 @@ AI::AI(int i)
 		}
 	}
 	else if (i == 4) {
-		m_name = "Monster5";
+		m_name = "m5";
 		m_hp = 30;
 		m_max_hp = 30;
 		for (int j = 0; j < 100; j++) {
@@ -206,7 +209,7 @@ AI::AI(int i)
 		}
 	}
 	else if (i == 5) {
-		m_name = "Monster6";
+		m_name = "m6";
 		m_hp = 20;
 		m_max_hp = 20;
 		for (int j = 0; j < 100; j++) {
@@ -222,7 +225,7 @@ AI::AI(int i)
 		}
 	}
 	else {
-		m_name = "BOSS";
+		m_name = "boss";
 		m_hp = 100;
 		m_max_hp = 100;
 		for (int j = 0; j < 100; j++) {

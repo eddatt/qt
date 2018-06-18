@@ -78,6 +78,8 @@ private:
     QGraphicsSimpleTextItem *prompt;
     QMap<QString,AvatarButton *> options;
     Button *ok;
+
+    QGraphicsDropShadowEffect *effect;
 };
 
 class GameScene final : public QGraphicsScene

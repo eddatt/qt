@@ -27,8 +27,6 @@ StartScene::StartScene(QObject *parent)
     this->setBackgroundBrush(QPixmap(UIUtility::getBackgroundPath("start")));
     createMenu();
 
-    //addItem(InfoBanner::getInstance());
-    //InfoBanner::getInstance()->show();
 }
 
 StartScene::~StartScene()
@@ -111,7 +109,7 @@ void StartScene::createCooseGeneralPannel()
 void StartScene::onGeneralConfirmed(const QString &general)
 {
     HumanPlayer::getInstance()->setGeneral(general);
-    BlueMoon::getInstance()->loadScene(new GameScene(nullptr));   
+    BlueMoon::getInstance()->loadScene(new GameScene(BlueMoon::getInstance()));   
 }
 
 Logo::Logo()
@@ -180,8 +178,6 @@ ChooseGeneralPanel::ChooseGeneralPanel(QGraphicsItem *parent /*= nullptr*/)
         this->selected = "";
     });
     title->setParentItem(this);
-    qDebug() << title->parentItem();
-    qDebug() << title->parent();
     title->setPos(mx - title->boundingRect().width() / 2, 0);
     title->show();
     int i = 0;
@@ -217,7 +213,5 @@ void ChooseGeneralPanel::onDealChosen(QString chosen)
         if (!this->selected.isEmpty())
             buttons[this->selected]->setSelected(false);
         this->selected = "";
-
     }
-    
 }

@@ -163,6 +163,10 @@ public:
         m_cards.removeAll(c);
     }
 
+    void removeAllCard() {
+        m_cards.clear();
+    }
+
     void drawCard(int n);
     void discardWholeHandcard();
     void discardOneCard(Card *card);

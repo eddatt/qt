@@ -19,8 +19,7 @@ GameScene::GameScene(QObject *parent)
     :QGraphicsScene(parent), is_prepared(false)
 {
     setSceneRect(UIUtility::getGraphicsSceneRect());
-    this->setBackgroundBrush(QPixmap(UIUtility::getBackgroundPath("on_game")));
-    
+  
     dash_board = new DashBoard;
     dash_board->setParent(this);
     this->addItem(dash_board);
@@ -47,9 +46,13 @@ GameScene::GameScene(QObject *parent)
     lose->setPos(width() / 2 - lose->boundingRect().width() / 2, height() / 2 - lose->boundingRect().height() / 2);
     this->addItem(win);
     this->addItem(lose);
+    QObject::connect(win, &GameFinishPrompt::reply, this, &GameScene::dealFinishedReply);
+    QObject::connect(lose, &GameFinishPrompt::reply, this, &GameScene::dealFinishedReply);
 
-    win->hide();
+    //win->hide();
     lose->hide();
+
+    this->setBackgroundBrush(QPixmap(UIUtility::getBackgroundPath("on_game")));
     
 }
 
@@ -133,7 +136,7 @@ void GameScene::run()
 {
     if (is_prepared)
     {
-        GameLogic::getInstance()->start();
+        GameLogic::getInstance()->startGame();
     }
 }
 
@@ -173,6 +176,7 @@ void GameScene::onGameFinished(bool win)
 
 void GameScene::dealFinishedReply(QString chosen)
 {
+    qobject_cast<QGraphicsObject *>(sender())->hide();
     if (chosen == "power") {
         HumanPlayer::getInstance()->setPower(HumanPlayer::getInstance()->power() + 1);
     }
@@ -219,6 +223,18 @@ PlayerInfoContainer::PlayerInfoContainer(AbstractPlayer *p /*= nullptr*/)
     createMarkItem();
 
     QObject::connect(p, &AbstractPlayer::currentChanged, this, &PlayerInfoContainer::setCurrent);
+    QObject::connect(p, &AbstractPlayer::hpChanged, [this]() {
+        this->setHp(player->hp(), player->maxHp());
+    });
+    QObject::connect(p, &AbstractPlayer::maxHpChanged, [this]() {
+        this->setHp(player->hp(), player->maxHp());
+    });
+    QObject::connect(p, &AbstractPlayer::maxHpChanged, [this]() {
+        this->setHp(player->hp(), player->maxHp());
+    });
+    QObject::connect(p, &AbstractPlayer::aliveChanged, this, &PlayerInfoContainer::setAlive);
+    QObject::connect(p, &AbstractPlayer::MarkChanged, this, &PlayerInfoContainer::updateMark);
+
 
 }
 
@@ -345,6 +361,7 @@ GameFinishPrompt::GameFinishPrompt(bool win)
     prompt = new QGraphicsSimpleTextItem(this);
     ok = new Button("OK");
     prompt->setFont(UIUtility::getInfoBarnerFont());
+    prompt->setBrush(QColor("white"));
     if (is_win) {
         prompt->setText(QString("The Next Level is %1, Please Choose Reward:").arg(QString::number(next_level)));
     }
@@ -405,6 +422,10 @@ GameFinishPrompt::GameFinishPrompt(bool win)
         else
             this->reply("Fine!");
     });
+    effect = new QGraphicsDropShadowEffect(this);
+    effect->setOffset(0);
+    effect->setBlurRadius(8);
+    setGraphicsEffect(effect);
 }
 
 GameFinishPrompt::~GameFinishPrompt()
@@ -428,7 +449,7 @@ QRectF GameFinishPrompt::boundingRect() const
             5 * 150
         );
         width += 40;
-        h = prompt->boundingRect().height() + 200 + 50 * 3 + 60 + ok->boundingRect().height();
+        h = prompt->boundingRect().height() + 200 + 50 + 60 + ok->boundingRect().height();
     }   
     else {
         width = prompt->boundingRect().width() + 40;
@@ -440,6 +461,8 @@ QRectF GameFinishPrompt::boundingRect() const
 
 void GameFinishPrompt::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
+    painter->setBrush(QColor("black"));
+    painter->drawRoundedRect(boundingRect(), 8, 8);
 }
 
 void GameFinishPrompt::dealOptionChosen(QString chosen)

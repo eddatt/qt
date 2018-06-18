@@ -34,7 +34,7 @@ void BlueMoon::loadScene(QGraphicsScene *scene)
 {
     auto old_scene = view->scene();
     if (old_scene) {
-        scene->deleteLater();
+        old_scene->deleteLater();
     }
     scene->setParent(this);
     this->view->setScene(scene);

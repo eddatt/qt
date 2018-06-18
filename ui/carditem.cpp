@@ -37,6 +37,7 @@ void CardItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 CardItem::~CardItem()
 {
     delete boundary;
+    delete card;
 }
 
 void CardItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -138,6 +139,6 @@ void CardItem::decoupled()
     setEnabled(false);
     hide();
     setParentItem(nullptr);
-    delete this;
+    this->deleteLater();
 }
 

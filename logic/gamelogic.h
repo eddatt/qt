@@ -5,6 +5,7 @@
 #include <QString>
 #include <QMap>
 #include <QEventLoop>
+#include <QThread>
 
 class Skill;
 class GameScene;
@@ -22,7 +23,7 @@ struct General {
 class AbstractPlayer;
 class AI;
 
-class GameLogic : public QObject
+class GameLogic : public QThread
 {
     Q_OBJECT
 
@@ -67,11 +68,11 @@ public:
 
 
 public slots:
-    void start();
+    void startGame();
+
+    void newRound();
 
     void playerUseCard(Card *card, AbstractPlayer *to);
-
-    void sleep(int msec);
 
 signals:
     void gameReady() const;

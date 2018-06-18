@@ -118,7 +118,7 @@ void InfoBanner::updateProperty()
 
 void InfoBanner::updateHp()
 {
-    Hp->setText(QString("%1 / %1").arg(HumanPlayer::getInstance()->hp()).arg(HumanPlayer::getInstance()->maxHp()));
+    Hp->setText(QString("%1 / %2").arg(HumanPlayer::getInstance()->hp()).arg(HumanPlayer::getInstance()->maxHp()));
     updateLayout();
 }
 

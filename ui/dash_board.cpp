@@ -261,10 +261,10 @@ void CardItemManager::updateCardItemLayout()
 {
     // QRectF(0, 0, 177, 233)
     double from_x = boundingRect().center().x() -(card_items.length() / 2.0) * 93;
-    QTimeLine *tl = new QTimeLine(500,this);
+    QTimeLine *tl = new QTimeLine(1000,this);
     QObject::connect(tl, &QTimeLine::finished, tl, &QTimeLine::deleteLater);
     for (auto &c : card_items) {
-        c->animateMoveTo(from_x, c->y(), 200, tl);
+        c->animateMoveTo(from_x, c->y(), 500, tl);
         c->setAvailable(c->cardInfo()->isAvailable());
         from_x += 93;
     }
@@ -389,5 +389,5 @@ void CardItemManager::unselectCard()
         emit selectChanged(false);
     }
     current_activate = nullptr;
-    updateCardItemLayout();
+    //updateCardItemLayout();
 }

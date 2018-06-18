@@ -108,7 +108,7 @@ Kill::Kill()
 
 bool Kill::targetFix() const
 {
-	return true;
+	return false;
 }
 
 bool Kill::filterTarget(AbstractPlayer * target) const
@@ -129,7 +129,7 @@ Jink::Jink()
 
 bool Jink::targetFix() const
 {
-	return false;
+	return true;
 }
 
 bool Jink::filterTarget(AbstractPlayer * target) const
@@ -150,7 +150,7 @@ Wine::Wine()
 
 bool Wine::targetFix() const
 {
-	return false;
+	return true;
 }
 
 bool Wine::filterTarget(AbstractPlayer * target) const
@@ -171,7 +171,7 @@ Peach::Peach()
 
 bool Peach::targetFix() const
 {
-	return false;
+	return true;
 }
 
 bool Peach::filterTarget(AbstractPlayer * target) const
@@ -192,7 +192,7 @@ Guisuo::Guisuo()
 
 bool Guisuo::targetFix() const
 {
-	return false;
+	return true;
 }
 
 bool Guisuo::filterTarget(AbstractPlayer * target) const
@@ -213,7 +213,7 @@ Maifu::Maifu()
 
 bool Maifu::targetFix() const
 {
-	return true;
+	return false;
 }
 
 bool Maifu::filterTarget(AbstractPlayer * target) const
@@ -234,7 +234,7 @@ Songjian::Songjian()
 
 bool Songjian::targetFix() const
 {
-	return false;
+	return true;
 }
 
 bool Songjian::filterTarget(AbstractPlayer * target) const
@@ -255,7 +255,7 @@ Shengnu::Shengnu()
 
 bool Shengnu::targetFix() const
 {
-	return false;
+	return true;
 }
 
 bool Shengnu::filterTarget(AbstractPlayer * target) const
@@ -276,7 +276,7 @@ Xianji::Xianji()
 
 bool Xianji::targetFix() const
 {
-	return true;
+	return false;
 }
 
 bool Xianji::filterTarget(AbstractPlayer * target) const
@@ -298,7 +298,7 @@ Zhongji::Zhongji()
 
 bool Zhongji::targetFix() const
 {
-	return true;
+	return false;
 }
 
 bool Zhongji::filterTarget(AbstractPlayer * target) const
