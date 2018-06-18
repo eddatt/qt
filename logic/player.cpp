@@ -230,33 +230,33 @@ AI::AI(int i)
 		m_max_hp = 100;
 		for (int j = 0; j < 100; j++) {
 			if (j % 6 == 0) {
-				attacks.push_back(pow((j - j % 6) / 6, 1.5, 14) + rd() % 4 - 2);
+				attacks.push_back(14 + rd() % 4 - 2);
 				defends.push_back(0 + rd() % 4);
 				//statuss.push_back(0);
 			}
 			if (j % 6 == 1) {
-				attacks.push_back(pow((j - j % 6) / 6, 1.5, 4) + rd() % 4 - 2);
-				defends.push_back(0 + rd() % 4);
+				attacks.push_back(6 + rd() % 4 - 2);
+				defends.push_back(15 + rd() % 4);
 				//statuss.push_back(0);
 			}
 			if (j % 6 == 2) {
-				attacks.push_back(pow((j - j % 6) / 6, 1.5, 4) + rd() % 4 - 2);
+				attacks.push_back(14 + rd() % 4 - 2);
 				defends.push_back(0 + rd() % 4);
 				//statuss.push_back(0);
 			}
 			if (j % 6 == 3) {
-				attacks.push_back(pow((j - j % 6) / 6, 1.5, 4) + rd() % 4 - 2);
-				defends.push_back(0 + rd() % 4);
+				attacks.push_back(6 + rd() % 4 - 2);
+				defends.push_back(0 + rd() % 8);
 				//statuss.push_back(0);
 			}
 			if (j % 6 == 4) {
-				attacks.push_back(0);
-				defends.push_back(0);
+				attacks.push_back(6 + rd() % 4 - 2);
+				defends.push_back(0 + rd() % 8);
 				//statuss.push_back(1);
 			}
 			if (j % 6 == 5) {
-				attacks.push_back(0);
-				defends.push_back(0);
+				attacks.push_back(6 + rd() % 4 - 2);
+				defends.push_back(0 + rd() % 8);
 				//statuss.push_back(1);
 			}
 		}

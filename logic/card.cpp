@@ -53,41 +53,37 @@ void Card::doEffect(AbstractPlayer *target)
 
 Card * Card::generateCard()
 {
-	int a = rd() % 10;
-	switch (a){
-	case 0:
+	int a = rd() % 30;
+	if (a < 7) {
 		return new Kill;
-		break;
-	case 1:
-		return new Jink;
-		break;
-	case 2:
-		return new Peach;
-		break;
-	case 3:
-		return new Wine;
-		break;
-	case 4:
-		return new Guisuo;
-		break;
-	case 5:
-		return new Shengnu;
-		break;
-	case 6:
-		return new Zhongji;
-		break;
-	case 7:
-		return new Songjian;
-		break;
-	case 8:
-		return new Maifu;
-		break;
-	case 9:
-		return new Xianji;
-		break;
 	}
-    return nullptr;
-
+	else if (a < 14) {
+		return new Jink;
+	}
+	else if (a < 18) {
+		return new Wine;
+	}
+	else if (a < 22) {
+		return new Songjian;
+	}
+	else if (a < 23) {
+		return new Shengnu;
+	}
+	else if (a < 25) {
+		return new Zhongji;
+	}
+	else if (a < 26) {
+		return new Xianji;
+	}
+	else if (a < 27) {
+		return new Peach;
+	}
+	else if (a < 28) {
+		return new Maifu;
+	}
+	else {
+		return new Guisuo;
+	}
 }
 
 int Card::energy() const
