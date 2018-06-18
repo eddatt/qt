@@ -288,7 +288,7 @@ bool Xianji::filterTarget(AbstractPlayer * target) const
 void Xianji::doEffect(AbstractPlayer * target)
 {
 	GameLogic::getInstance()->damage(HumanPlayer::getInstance(), target, (20 + HumanPlayer::getInstance()->power() * 2)*(1 + HumanPlayer::getInstance()->drunk()));
-	GameLogic::getInstance()->damage(target, HumanPlayer::getInstance(), (20 + HumanPlayer::getInstance()->power() * 2)*(1 + HumanPlayer::getInstance()->drunk()));
+	GameLogic::getInstance()->damage(target, HumanPlayer::getInstance(), 4);
 }
 
 Zhongji::Zhongji()
