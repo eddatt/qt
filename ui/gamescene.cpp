@@ -8,6 +8,8 @@
 #include "carditem.h"
 #include "logic/card.h"
 #include "button.h"
+#include "bluemoon.h"
+#include "startscene.h"
 
 #include <QPixmap>
 #include <QPainter>
@@ -34,6 +36,19 @@ GameScene::GameScene(QObject *parent)
 
     GameLogic::getInstance()->setGameScene(this);
     QObject::connect(GameLogic::getInstance(), &GameLogic::gameReady, this, &GameScene::prepareGame);
+    QObject::connect(GameLogic::getInstance(), &GameLogic::gameFinished, this, &GameScene::onGameFinished);
+
+    win = new GameFinishPrompt(true);
+    lose = new GameFinishPrompt(false);
+    win->setParent(this);
+    win->setPos(width() / 2 - win->boundingRect().width() / 2, height() / 2 - win->boundingRect().height() / 2);
+    lose->setParent(this);
+    lose->setPos(width() / 2 - lose->boundingRect().width() / 2, height() / 2 - lose->boundingRect().height() / 2);
+    this->addItem(win);
+    this->addItem(lose);
+
+    win->hide();
+    //lose->hide();
 }
 
 
@@ -86,6 +101,7 @@ void GameScene::prepareGame()
     barner->updateLevel(GameLogic::getInstance()->currentLevel());
     createAIContainer();
     is_prepared = true;
+    run();
 }
 
 void GameScene::createAIContainer()
@@ -115,7 +131,7 @@ void GameScene::run()
 {
     if (is_prepared)
     {
-
+        GameLogic::getInstance()->start();
     }
 }
 
@@ -144,9 +160,35 @@ void GameScene::selectReply(AbstractPlayer *player)
     emit HumanPlayer::getInstance()->cardUsed(dash_board->currentSelectCard()->cardInfo(),player);
 }
 
-void GameScene::onGameFinished()
+void GameScene::onGameFinished(bool win)
 {
     is_prepared = false;
+    if (win)
+        this->win->show();
+    else
+        this->lose->show();
+}
+
+void GameScene::dealFinishedReply(QString chosen)
+{
+    if (chosen == "power") {
+        HumanPlayer::getInstance()->setPower(HumanPlayer::getInstance()->power() + 1);
+    }
+    else if (chosen == "agility") {
+        HumanPlayer::getInstance()->setAgility(HumanPlayer::getInstance()->agility() + 1);
+    }
+    else if (chosen == "intelligence") {
+        HumanPlayer::getInstance()->setIntelligence(HumanPlayer::getInstance()->intelligence() + 1);
+    }
+    else if (chosen == "max_hp") {
+        HumanPlayer::getInstance()->setMaxHp(HumanPlayer::getInstance()->maxHp() + 10);
+    }
+    else if(chosen == "Fine!") {
+        GameLogic::getInstance()->setGameScene(nullptr);
+        BlueMoon::getInstance()->loadScene(new StartScene(nullptr));
+        return;
+    }
+    GameLogic::getInstance()->prepareGameScene(this->getCurrentLevel() + 1);
 }
 
 PlayerInfoContainer::PlayerInfoContainer(AbstractPlayer *p /*= nullptr*/)
@@ -353,6 +395,14 @@ GameFinishPrompt::GameFinishPrompt(bool win)
     ok->setParent(this);
     ok->setParentItem(this);
     ok->setPos(this->boundingRect().width() / 2 - ok->boundingRect().width() / 2, currentY);
+    ok->setEnabled(!is_win);
+
+    connect(ok, &Button::click, [this]() {
+        if (this->is_win && !current_option.isEmpty())
+            this->reply(current_option);
+        else
+            this->reply("Fine!");
+    });
 }
 
 GameFinishPrompt::~GameFinishPrompt()
@@ -363,6 +413,7 @@ GameFinishPrompt::~GameFinishPrompt()
 void GameFinishPrompt::setInfo(int next_level)
 {
     this->next_level = next_level;
+    prompt->setPos((this->boundingRect().width() - prompt->boundingRect().width()) / 2, 15);
 }
 
 QRectF GameFinishPrompt::boundingRect() const

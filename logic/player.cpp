@@ -61,7 +61,8 @@ HumanPlayer::~HumanPlayer()
 
 void HumanPlayer::drawCard(int n)
 {
-
+    for (int i = 0; i < n; ++i) {
+    }
 }
 
 void HumanPlayer::discardWholeHandcard()

@@ -104,7 +104,8 @@ public slots:
 
     void prepareFortargetSelect(bool is_select);
 
-    void onGameFinished();
+    void onGameFinished(bool win);
+    void dealFinishedReply(QString chosen);
 
 private:
     void createAIContainer();
@@ -114,7 +115,8 @@ private:
 
     bool is_prepared;
 
-    GameFinishPrompt *prompt;
+    GameFinishPrompt *win;
+    GameFinishPrompt *lose;
 
     CardItem *current_judge_card;
 };

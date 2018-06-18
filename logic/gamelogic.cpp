@@ -46,7 +46,6 @@ GameLogic::GameLogic(QObject *parent)
 {
     QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::endRound, &event_loop, &QEventLoop::quit);
     QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::cardUsed, this, &GameLogic::playerUseCard);
-
 }
 
 GameLogic * GameLogic::getInstance()
@@ -70,11 +69,23 @@ QStringList GameLogic::getAllGenerals() const
 
 void GameLogic::setGameScene(GameScene *scene)
 {
-    this->game_scene = scene;;
+    this->game_scene = scene;
+    if (scene == nullptr) {
+        is_run = false;
+        alive_ais.clear();
+        alive_players.clear();
+        current_player = nullptr;
+        current_level = 0;
+    }
 }
 
 void GameLogic::prepareGameScene(int level)
 {
+    current_level = level;
+    if (level > LEVEL_NUMBER) {
+        emit allLevelFinished();
+        return;
+    }
 	QList<int> l;
 	if (level == 1) {
 		l.push_back(0);

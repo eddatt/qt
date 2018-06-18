@@ -34,8 +34,9 @@ void BlueMoon::loadScene(QGraphicsScene *scene)
 {
     auto old_scene = view->scene();
     if (old_scene) {
-        scene->destroyed();
+        scene->deleteLater();
     }
+    scene->setParent(this);
     this->view->setScene(scene);
     QResizeEvent e(QSize(view->size().width(), view->size().height()), view->size());
     view->resizeEvent(&e);

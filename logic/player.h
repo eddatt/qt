@@ -137,6 +137,7 @@ public:
     void setIntelligence(int intel) {
         this->m_intelligence = intel;
         intelligenceChanged();
+        this->setMaxMagic(2 + intel);
     }
 	inline int drunk() const {
 		return m_drunk;

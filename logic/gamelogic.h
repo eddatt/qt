@@ -58,6 +58,8 @@ public:
     void executeAIOpreation(AI *ai);
     void removeAIPurpose(AI *ai);
 
+    const static int LEVEL_NUMBER = 5;
+
 
 public slots:
     void start();
@@ -69,6 +71,7 @@ public slots:
 signals:
     void gameReady() const;
     void gameFinished(bool win);
+    void allLevelFinished();
 
 private:
     GameLogic(QObject *parent);
