@@ -10,8 +10,6 @@ class Skill;
 class GameScene;
 class Card;
 
-static QHash<QString, General> generals;
-
 struct General {
     QString name;
     //QList<Skill *> skills;
@@ -57,6 +55,8 @@ public:
     void showAIPurpose(AI *ai);
     void executeAIOpreation(AI *ai);
     void removeAIPurpose(AI *ai);
+
+	static QHash<QString, General> generals;
 
 
 public slots:

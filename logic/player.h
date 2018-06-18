@@ -102,6 +102,9 @@ public:
     static HumanPlayer *getInstance();
     virtual ~HumanPlayer();
 
+
+	virtual void setGeneral(const QString &name) override;
+
     inline int magic() const {
         return m_magic;
     }
