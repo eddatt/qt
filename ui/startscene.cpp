@@ -109,6 +109,7 @@ void StartScene::createCooseGeneralPannel()
 void StartScene::onGeneralConfirmed(const QString &general)
 {
     HumanPlayer::getInstance()->setGeneral(general);
+    HumanPlayer::getInstance()->removeAllCard();
     BlueMoon::getInstance()->loadScene(new GameScene(BlueMoon::getInstance()));   
 }
 

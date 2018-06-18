@@ -64,6 +64,8 @@ public:
 
     void setInfo(int next_level);
 
+    void setText(const QString &text);
+
     virtual QRectF boundingRect() const override;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */) override;
 
@@ -108,6 +110,8 @@ public slots:
 
     void onGameFinished(bool win);
     void dealFinishedReply(QString chosen);
+
+    void onWholeGameFinished();
 
 private:
     void createAIContainer();

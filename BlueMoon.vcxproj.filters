@@ -97,6 +97,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_player.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="ui\audiocontroler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="BlueMoon.qrc">
@@ -143,6 +146,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ui\uiutility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\AudioControler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

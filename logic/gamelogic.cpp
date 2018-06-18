@@ -13,6 +13,8 @@ void GameLogic::startGame()
         return;
     if (current_player == nullptr) {
         current_player = HumanPlayer::getInstance();
+        current_player->setAlive(true);
+        alive_players << HumanPlayer::getInstance();
     }
     is_run = true;
     current_player->removeMark("@defense", current_player->markNumber("@defense"));
@@ -81,7 +83,7 @@ GameLogic::GameLogic(QObject *parent)
     QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::endRound, this, &GameLogic::newRound);
     QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::cardUsed, this, &GameLogic::playerUseCard);
 
-    alive_players << HumanPlayer::getInstance();
+    
 
 }
 
@@ -241,6 +243,7 @@ void GameLogic::useCardBy(AbstractPlayer *from, AbstractPlayer *to, Card *card)
     }
     card->doEffect(to);
     HumanPlayer::getInstance()->discardOneCard(card);
+    game_scene->dashBoard()->cardItemManager()->updateCardItemLayout();
 }   
 
 void GameLogic::showAIPurpose(AI *ai)

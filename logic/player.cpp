@@ -17,7 +17,7 @@ int pow(int i, double x, int ori) {
 }
 
 AbstractPlayer::AbstractPlayer()
-    :m_general("ZhaZhaHui"), m_max_hp(100), m_hp(m_max_hp)
+    :m_general("ZhaZhaHui"), m_max_hp(100), m_hp(m_max_hp), m_alive(true)
 {
 
 }

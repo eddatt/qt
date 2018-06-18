@@ -36,6 +36,7 @@ GameScene::GameScene(QObject *parent)
     GameLogic::getInstance()->setGameScene(this);
     QObject::connect(GameLogic::getInstance(), &GameLogic::gameReady, this, &GameScene::prepareGame);
     QObject::connect(GameLogic::getInstance(), &GameLogic::gameFinished, this, &GameScene::onGameFinished);
+    QObject::connect(GameLogic::getInstance(), &GameLogic::allLevelFinished, this, &GameScene::onWholeGameFinished);
 
 
     win = new GameFinishPrompt(true);
@@ -203,6 +204,12 @@ void GameScene::dealFinishedReply(QString chosen)
     GameLogic::getInstance()->prepareGameScene(this->getCurrentLevel() + 1);
 }
 
+void GameScene::onWholeGameFinished()
+{
+    lose->setText("You have pass all level ! Congratulations!");
+    lose->show();
+}
+
 PlayerInfoContainer::PlayerInfoContainer(AbstractPlayer *p /*= nullptr*/)
     :player(p)
 {
@@ -229,15 +236,7 @@ PlayerInfoContainer::PlayerInfoContainer(AbstractPlayer *p /*= nullptr*/)
     createMarkItem();
 
     QObject::connect(p, &AbstractPlayer::currentChanged, this, &PlayerInfoContainer::setCurrent);
-    QObject::connect(p, &AbstractPlayer::hpChanged, [this]() {
-        this->setHp(player->hp(), player->maxHp());
-    });
-    QObject::connect(p, &AbstractPlayer::maxHpChanged, [this]() {
-        this->setHp(player->hp(), player->maxHp());
-    });
-    QObject::connect(p, &AbstractPlayer::maxHpChanged, [this]() {
-        this->setHp(player->hp(), player->maxHp());
-    });
+    QObject::connect(p, &AbstractPlayer::hpInfoChanged, this ,&PlayerInfoContainer::setHp);
     QObject::connect(p, &AbstractPlayer::aliveChanged, this, &PlayerInfoContainer::setAlive);
     QObject::connect(p, &AbstractPlayer::MarkChanged, this, &PlayerInfoContainer::updateMark);
 
@@ -356,7 +355,7 @@ GameFinishPrompt::GameFinishPrompt(bool win)
     prompt->setFont(UIUtility::getInfoBarnerFont());
     prompt->setBrush(QColor("white"));
     if (is_win) {
-        prompt->setText(QString("The Next Level is %1, Please Choose Reward:").arg(QString::number(next_level)));
+        prompt->setText(QString("A Initial Reward! Please Choose One:"));
     }
     else {
         prompt->setText(QString("You Have Been DEFEAT, Good Luck!"));
@@ -480,4 +479,10 @@ void GameFinishPrompt::dealOptionChosen(QString chosen)
         this->current_option = "";
         ok->setEnabled(false);
     }
+}
+
+void GameFinishPrompt::setText(const QString &text)
+{
+    prompt->setText(QString(text));
+    prompt->setPos((this->boundingRect().width() - prompt->boundingRect().width()) / 2, 15);
 }

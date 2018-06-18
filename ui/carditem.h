@@ -59,4 +59,5 @@ private:
     QGraphicsDropShadowEffect *boundary;
     QString name;
     Card *card;
+
 };

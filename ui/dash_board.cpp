@@ -59,12 +59,7 @@ DashBoard::DashBoard()
     bar->setParentItem(this);
     bar->setPos(0, this->boundingRect().height() - bar->boundingRect().height() - 5);
 
-    QObject::connect(HumanPlayer::getInstance(), &AbstractPlayer::hpChanged, [this]() {
-        this->bar->setCurrentHp(HumanPlayer::getInstance()->hp());
-    });
-    QObject::connect(HumanPlayer::getInstance(), &AbstractPlayer::maxHpChanged, [this]() {
-        this->bar->setHp(HumanPlayer::getInstance()->hp(), HumanPlayer::getInstance()->maxHp());
-    });
+    QObject::connect(HumanPlayer::getInstance(), &AbstractPlayer::hpInfoChanged, bar, &HpBar::setHp);
 
     container = new PlayerAvatarContainer(HumanPlayer::getInstance());
     container->setParent(this);
@@ -252,7 +247,7 @@ void CardItemManager::updateCardItemLayout()
     QTimeLine *tl = new QTimeLine(1000,this);
     QObject::connect(tl, &QTimeLine::finished, tl, &QTimeLine::deleteLater);
     for (auto &c : card_items) {
-        c->animateMoveTo(from_x, c->y(), 500, tl);
+        c->animateMoveTo(from_x, boundingRect().center().y() - c->boundingRect().center().y(), 500, tl);
         c->setAvailable(c->cardInfo()->isAvailable());
         from_x += 93;
     }

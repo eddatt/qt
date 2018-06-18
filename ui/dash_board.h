@@ -103,6 +103,10 @@ public:
     CardItem *currentSelectCard() const {
         return card_manager->currentSelected();
     }
+
+    void unSelecAllCard() const {
+        return card_manager->unselectCard();
+    }
     
 public slots:
     void updateMark(const QString &mark);

@@ -20,6 +20,7 @@ public:
     void setHp(int new_hp) {
         this->m_hp = new_hp;
         hpChanged();
+        hpInfoChanged(m_hp, m_max_hp);
     }
     inline int maxHp() const {
         return this->m_max_hp;
@@ -27,6 +28,7 @@ public:
     void setMaxHp(int new_max_hp) {
         this->m_max_hp = new_max_hp;
         maxHpChanged();
+        hpInfoChanged(m_hp, m_max_hp);
     }
     virtual inline QString general() const {
         return m_general;
@@ -55,6 +57,7 @@ public:
 signals:
     void hpChanged();
     void maxHpChanged();
+    void hpInfoChanged(int, int);
     void generalChanged();
     void aliveChanged(bool);
     void MarkChanged(QString);
