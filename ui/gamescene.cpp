@@ -490,5 +490,5 @@ void GameFinishPrompt::setText(const QString &text)
     prompt->setText(QString(text));
     prompt->setPos((this->boundingRect().width() - prompt->boundingRect().width()) / 2, 15);
 
-    ok->setPos(this->boundingRect().width() / 2 - ok->boundingRect().width() / 2, this->boundingRect().height() - ok->boundingRect().height()/2 - 30);
+    ok->setPos(this->boundingRect().width() / 2 - ok->boundingRect().width() / 2, this->boundingRect().height() - ok->boundingRect().height() - 30);
 }

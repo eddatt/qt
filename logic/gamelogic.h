@@ -23,7 +23,7 @@ struct General {
 class AbstractPlayer;
 class AI;
 
-class GameLogic : public QObject
+class GameLogic : public QThread
 {
     Q_OBJECT
 

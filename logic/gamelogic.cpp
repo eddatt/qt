@@ -54,7 +54,7 @@ void GameLogic::newRound()
 }
 
 GameLogic::GameLogic(QObject *parent)
-    : QObject(parent), is_run(false),current_player(nullptr), game_scene(nullptr)
+    : QThread(parent), is_run(false),current_player(nullptr), game_scene(nullptr)
 {
 	General a, b, c;
 	a.name = "ZhaZhaHui";
@@ -83,8 +83,7 @@ GameLogic::GameLogic(QObject *parent)
     QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::endRound, this, &GameLogic::newRound);
     QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::cardUsed, this, &GameLogic::playerUseCard);
 
-    
-
+    this->start();
 }
 
 void GameLogic::freeGarbage()
@@ -103,7 +102,7 @@ GameLogic * GameLogic::getInstance()
 
 GameLogic::~GameLogic()
 {
-
+    this->terminate();
 }
 
 QStringList GameLogic::getAllGenerals() const
