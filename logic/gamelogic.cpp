@@ -84,6 +84,8 @@ GameLogic::GameLogic(QObject *parent)
     QObject::connect(HumanPlayer::getInstance(), &HumanPlayer::cardUsed, this, &GameLogic::playerUseCard);
 
     this->start();
+
+    HumanPlayer::getInstance()->moveToThread(this);
 }
 
 void GameLogic::freeGarbage()
