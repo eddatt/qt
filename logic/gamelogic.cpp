@@ -59,14 +59,14 @@ GameLogic::GameLogic(QObject *parent)
 	General a, b, c;
 	a.name = "ZhaZhaHui";
 	a.max_hp = 80;
-	a.pwr_plus = 0;
+	a.pwr_plus = 1;
 	a.agility_plus = 0;
 	a.intelligence_plus = 0;
 
 	b.name = "GuTianLe";
 	b.max_hp = 70;
 	b.pwr_plus = 0;
-	b.agility_plus = 0;
+	b.agility_plus = 1;
 	b.intelligence_plus = 0;
 
 	c.name = "ChenXiaoChun";
